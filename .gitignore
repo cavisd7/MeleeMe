@@ -2,3 +2,6 @@
 /**/pgdata/
 .env.*
 *.log
+notes
+*.todo
+build/

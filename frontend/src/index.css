@@ -1,0 +1,72 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato', sans-serif;
+    /*height: 100%;*/
+    background-color: #faf9f9;
+};
+
+a {
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+a:focus, a:hover, a:visited, a:link, a:active {
+    text-decoration: none !important;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Auth pages layout */
+.auth-page {
+    height: 100%;
+    /*width: 100%;*/
+    padding: 1rem;
+    background-color: #faf9f9;
+    color: #473d3c;
+}
+
+.auth-main-full {
+    width: 100%;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.auth-main {
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Main app full */
+.app-container {
+    display: flex;
+    min-height: calc(100vh - 48px);
+    margin-top: 48px;
+}
+
+.content-full {
+    flex: 1;
+    padding: 24px;
+    background-color: #faf9f9;
+}
+
+.main-container {
+    height: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+/* Helpers */
+.space-bottom {
+    margin-bottom: 2rem !important;
+}
