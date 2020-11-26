@@ -1,0 +1,1 @@
+export type SuccessDTO = { message: 'success' };

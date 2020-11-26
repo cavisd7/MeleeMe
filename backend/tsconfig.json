@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "lib": ["ES2020"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "ES2020",
+        "rootDir": "./src",
+        "outDir": "./build",
+
+        "sourceMap": true,
+        //"inlineSourceMap": true,
+
+        /* Configurations */
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,               
+        "experimentalDecorators": true,        
+        "emitDecoratorMetadata": true,         
+        "keyofStringsOnly": true
+    },
+    "files": ["typings/session.d.ts"],
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"]
+}

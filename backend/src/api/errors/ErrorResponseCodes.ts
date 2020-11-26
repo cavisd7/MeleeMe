@@ -1,0 +1,1 @@
+export type HTTPErrorResponseCode = 200 | 201 | 400 | 401 | 404 | 411 | 500;   
