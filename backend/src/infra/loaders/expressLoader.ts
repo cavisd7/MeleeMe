@@ -1,7 +1,5 @@
 import express, { response } from 'express';
-import { Redis } from 'ioredis';
 import connect_redis from 'connect-redis';
-
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
@@ -9,7 +7,8 @@ import helmet from 'helmet';
 import session from 'express-session';
 
 import config from '../config/index';
-import { rootRouter } from '../../api/routers/index';
+import Client from '../store';
+//import { rootRouter } from '../../api/routers/index';
 
 interface ExpressConfig {
     foo: string
@@ -21,13 +20,13 @@ interface ExpressConfig {
     }
 }*/
 
-export const createExpressApp = (client: Redis/*config: ExpressConfig*/) => {
+export const createExpressApp = async (/*Client: any*//*config: ExpressConfig*/) => {
     const app: express.Application = express();
 
     const Store = connect_redis(session);
     const handleSession = session({ 
         ...config.expressConfig.sessionConfig as any, 
-        store: new Store({ port: config.redisPort, host: config.redisHost, client }) 
+        store: new Store(Client.client) 
     });
     
     /** Middleware */
@@ -41,7 +40,7 @@ export const createExpressApp = (client: Redis/*config: ExpressConfig*/) => {
     app.use(cookieParser());
 
     /**API Routes */
-    app.use('/', rootRouter);
+    //app.use('/', rootRouter);
 
     return app;
 }

@@ -1,29 +1,37 @@
 import http from 'http';
 import cookie from 'cookie';
-import { Redis } from 'ioredis';
 
-import { SocketManager } from './infra/socket/SocketManager';
 import config from './infra/config/index';
+import { ServerLogger } from './infra/utils/logging';
+import { SocketManager } from './infra/socket/SocketManager';
 
-export class Server {
+import Client from './infra/store'; //?
+
+interface IServer {
+    start: () => void;
+    stop: () => void;
+}
+
+export class Server implements IServer {
     private app;
     private httpServer: http.Server;
     private SocketManager: SocketManager;
     static readonly PORT = config.serverPort;
 
-    constructor(app: Express.Application, client: Redis) {
+    constructor(app: Express.Application/*, client: Client*/) {
         //this.app = app;
         //console.log((app as any)._router.stack.filter(item => item.name === 'handleSocket'));
 
-        this.SocketManager = new SocketManager(client);
-
         this.httpServer = http.createServer(app);
-        this.httpServer.on('error', Server.onError);
-        this.httpServer.on('listening', Server.onListening);
-        this.httpServer.on('upgrade', (req, socket, head) => this.onUpgrade(req, socket, head, client));
+        this.httpServer.on('error', (err) => this.onError(err));
+        this.httpServer.on('listening', () => this.onListening());
+        this.httpServer.on('upgrade', (req, socket, head) => this.onUpgrade(req, socket, head, Client));
+
+        //this.SocketManager = new SocketManager(client);
     }
 
     public start() {
+        console.log('listeners:', this.httpServer.listeners)
         this.httpServer.listen(Server.PORT);
     }
 
@@ -39,12 +47,12 @@ export class Server {
         }
     }
 
-    static onError() {
-        console.log('Server encountered and error!')
+    private onError(err: Error) {
+        console.log('Server encountered and error!', err)
     }
 
-    static onListening() {
-        console.log('Server is listening for requests')
+    private onListening() {
+        ServerLogger.info(`Server is listening for requests on ${Server.PORT}`);
     }
 
     private async onUpgrade(req: http.IncomingMessage, socket, head: Buffer, client) {

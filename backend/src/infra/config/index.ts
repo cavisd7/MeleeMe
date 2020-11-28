@@ -43,7 +43,7 @@ export default {
     },
     /* REDIS configs */
     redisHost: process.env.REDIS_HOST,
-    redisPort: process.env.REDIS_PORT,
+    redisPort: Number.parseInt(process.env.REDIS_PORT, 10),
     /* EXPRESS-SESSION configs */
     expressConfig : {
         sessionConfig: {

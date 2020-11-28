@@ -1,8 +1,15 @@
-import { createConnection, ConnectionOptions, Connection } from 'typeorm'
+import { 
+    createConnection, 
+    ConnectionOptions, 
+    Connection 
+} from 'typeorm';
 
 import config from '../config/index';
+import { ServerLogger } from '../utils/logging';
 
 export const connectToDb = async (): Promise<Connection> => {
+    ServerLogger.info(`Attempting to connect to database @ ${config.dbConfig.host}:${config.dbConfig.port}...`);
+
     let _connection;
     let retries = 0;
     const retryLimit = 5;
@@ -11,7 +18,7 @@ export const connectToDb = async (): Promise<Connection> => {
         try {
             await createConnection(config.dbConfig as any)
                 .then(connection => {
-                    console.log('Successfully connected to database!')
+                    ServerLogger.info('Successfully connected to database');
                     _connection = connection;
                 });
 
@@ -20,7 +27,7 @@ export const connectToDb = async (): Promise<Connection> => {
             if (retries === retryLimit - 1) throw new Error(`Could not connect to database after ${retryLimit} retries`);
 
             retries++;
-            console.log(`Failed to connect to database. ${retryLimit - retries} retries left.`);
+            ServerLogger.warn(`Failed to connect to database. ${retryLimit - retries} retries left`);
             await new Promise(resolve => setTimeout(resolve, 1000));
         };
     };
