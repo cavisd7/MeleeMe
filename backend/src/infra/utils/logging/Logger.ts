@@ -1,6 +1,3 @@
-//dev prod toggle
-//logger name/id, timestamp, message
-//trace, info, warn, error, fatal 
 import fs from 'fs';
 import * as uuid from 'uuid';
 import winston from 'winston';
@@ -46,8 +43,12 @@ export class Logger implements ILogger {
 
     private init(): winston.Logger {
         try {
-            if (fs.existsSync(config.logOutputPath)) {
-                fs.unlinkSync(config.logOutputPath)
+            if (fs.existsSync(config.combinedLogPath)) {
+                fs.unlinkSync(config.combinedLogPath)
+            };
+
+            if (fs.existsSync(config.errorLogPath)) {
+                fs.unlinkSync(config.errorLogPath)
             };
         } catch (err) {
             this.fileLogError = true;
@@ -76,8 +77,16 @@ export class Logger implements ILogger {
     private makeTransports (): winston.transport[] {
         if (process.env.NODE_ENV !== 'production') {
             return [
-                !this.fileLogError && new winston.transports.File({ 
-                    filename: config.logOutputPath,
+                /* TODO: only log certain levels */
+                new winston.transports.File({ 
+                    filename: config.combinedLogPath,
+                    format: winston.format.combine(
+                        winston.format.json()
+                    ) 
+                }),
+                new winston.transports.File({ 
+                    level: 'error',
+                    filename: config.errorLogPath,
                     format: winston.format.combine(
                         winston.format.json()
                     ) 

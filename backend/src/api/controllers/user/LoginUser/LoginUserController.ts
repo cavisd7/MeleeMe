@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { ServerLogger } from '../../../../infra/utils/logging';
 import { BaseController } from "../../BaseController";
 import { LoginUserControllerLogic } from './LoginUserControllerLogic'
 import { ILoginUserBody } from './schema';
@@ -38,7 +39,7 @@ class LoginUserController extends BaseController {
 
             return this.ok<any>(res, { user: result.value, token: authorizationToken });
         } catch (err) {
-            this.logger.error(`failed in controller ${err.toString()}`)
+            ServerLogger.error(`failed in controller ${err.toString()}`)
             this.fail(res, new Error('failed in controller'));
         };
     };

@@ -5,3 +5,5 @@
 notes
 *.todo
 build/
+logs/
+dump.rdb

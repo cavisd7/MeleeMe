@@ -3,6 +3,7 @@ import express from 'express';
 import { BaseController } from "../../BaseController";
 import { DeleteUserControllerLogic } from './DeleteUserControllerLogic'
 import { IDeleteUserBody } from './schema';
+import { ServerLogger } from '../../../../infra/utils/logging';
 
 class DeleteUserController extends BaseController {
     private Controllerlogic: DeleteUserControllerLogic;
@@ -25,7 +26,7 @@ class DeleteUserController extends BaseController {
 
             /*Remove session from store */
             req.session.destroy(() => {
-                this.logger.info('Session successfully destroyed');
+                ServerLogger.info('Session successfully destroyed');
             });
 
             /*Clear session cookie */

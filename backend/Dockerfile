@@ -12,4 +12,6 @@ COPY . /app
 
 EXPOSE 4000
 
-CMD ["npm", "run", "dev:local"]
+ENV NODE_ENV=development
+
+CMD ["npm", "run", "dev"]

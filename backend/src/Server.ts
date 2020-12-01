@@ -1,84 +1,116 @@
 import http from 'http';
 import cookie from 'cookie';
+import stream from 'stream';
 
 import config from './infra/config/index';
-import { ServerLogger } from './infra/utils/logging';
+import { ServerLogger, AppLogger } from './infra/utils/logging';
 import { SocketManager } from './infra/socket/SocketManager';
-
-import Client from './infra/store'; //?
+import { SocketServer } from './infra/socket/SocketServer';
 
 interface IServer {
     start: () => void;
     stop: () => void;
-}
+};
 
 export class Server implements IServer {
-    private app;
-    private httpServer: http.Server;
-    private SocketManager: SocketManager;
     static readonly PORT = config.serverPort;
 
-    constructor(app: Express.Application/*, client: Client*/) {
-        //this.app = app;
-        //console.log((app as any)._router.stack.filter(item => item.name === 'handleSocket'));
+    private httpServer: http.Server;
+    //private SocketManager: SocketManager;
+    private SocketServer: SocketServer;
+    private logConnectionsInterval;
 
+    constructor(app: Express.Application, authenticateSession) {
         this.httpServer = http.createServer(app);
         this.httpServer.on('error', (err) => this.onError(err));
         this.httpServer.on('listening', () => this.onListening());
-        this.httpServer.on('upgrade', (req, socket, head) => this.onUpgrade(req, socket, head, Client));
-
-        //this.SocketManager = new SocketManager(client);
-    }
+        this.httpServer.on('close', () => this.onClose())
+        this.httpServer.on('upgrade', (req, socket, head) => this.onUpgrade(req, socket, head, authenticateSession));
+        
+        this.SocketServer = new SocketServer();
+        //this.SocketManager = new SocketManager();
+    };
 
     public start() {
-        console.log('listeners:', this.httpServer.listeners)
         this.httpServer.listen(Server.PORT);
-    }
+    };
 
-    public stop() {
-        try {
+    public async stop() {
+        return new Promise((resolve, reject) => {
+            if (this.httpServer === null) {
+                return resolve('No server to shutdown');
+            };
+
             this.httpServer.close((err) => {
                 if (err) {
-                    console.log('Error while closing server')
-                }
-            })
-        } catch (err) {
-            console.log('catch while closing server')
-        }
-    }
+                    return reject(err);
+                };
 
-    private onError(err: Error) {
-        console.log('Server encountered and error!', err)
-    }
+                return resolve('Successful shutdown');
+            });
+        });
+    };
+
+    private onError(err) {
+        if (err.errno) {
+            ServerLogger.error(`Port ${Server.PORT} already in use!`);
+        } else {
+            ServerLogger.error(`Server encountered and error! ${err}`);
+        };
+    };
 
     private onListening() {
         ServerLogger.info(`Server is listening for requests on ${Server.PORT}`);
-    }
 
-    private async onUpgrade(req: http.IncomingMessage, socket, head: Buffer, client) {
-        if (req.headers.cookie) {
-            const cookies = cookie.parse(req.headers.cookie);
+        this.logConnectionsInterval = setInterval(() => this.httpServer.getConnections((err, connectionCount) => {
+            ServerLogger.info(`${connectionCount} connections currently open on server`); /* TODO: change level */
+        }), 5000);
 
-            if (cookies['syd']) {
-                const sessionId = `sess:${cookies['syd'].split('.')[0].split(':')[1]}`;
+        process.removeAllListeners('SIGINT').on('SIGINT', this.shutdown.bind(this));
+        process.removeAllListeners('SIGTERM').on('SIGTERM', this.shutdown.bind(this));
+    };
 
-                const validSess = await client.get(sessionId)
-                if (!validSess) {
-                    console.log('no cookie! meeeeeee')
-                    socket.write(`HTTP/1.1 401 Unauthorized\r\n\r\n`);
-                    socket.destroy();
-                    return;
-                } else {
-                        this.SocketManager.server.handleUpgrade(req, socket, head, (ws) => {
-                        this.SocketManager.server.emit('connection', ws, req, sessionId)
-                    });
-                }
-            }
-        } else {
-            console.log('no cookie!')
-            socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
-            socket.destroy();
-            return;
-        }
-    }
+    private onClose() {
+        clearInterval(this.logConnectionsInterval);
+        ServerLogger.warn('Server shutdown complete');
+    };
+
+    private async shutdown () {
+        try {
+            ServerLogger.warn('Server shutting down...');
+
+            /* TODO: shutdown socket server */
+
+            await this.stop()
+                .then(_ => {
+                    this.httpServer = null;
+                    ServerLogger.info('Server shutdown successfully')
+                });
+
+            process.exit(0);
+        } catch (err) {
+            ServerLogger.error('Server failed to shutdown gracefully');
+
+            process.exit(-1);
+        };
+    };
+
+    private onUpgrade(req: http.IncomingMessage, socket/*: stream.Duplex*/, head: Buffer, authenticateSession) {
+        authenticateSession(req as any, {} as any, () => {
+            if ((req as any).session.id) {
+                AppLogger.info('User session authenticated');
+
+                const session = Object.assign({}, (req as any).session, { sessionId: `sess:${(req as any).session.id}` });
+
+                this.SocketServer.wss.handleUpgrade(req, socket, head, (ws) => {
+                    this.SocketServer.wss.emit('connection', ws, req, session);
+                });
+            } else {
+                AppLogger.error('Invalid user session');
+
+                socket.write(`HTTP/1.1 401 Unauthorized\r\n\r\n`);
+                socket.destroy();
+            };
+        });
+    };
 };

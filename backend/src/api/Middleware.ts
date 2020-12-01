@@ -7,7 +7,7 @@ import Busboy from 'busboy';
 import { pipeline } from 'stream';
 import AWS from 'aws-sdk';
 
-import Logger from '../infra/utils/Logger';
+import { ServerLogger } from '../infra/utils/logging';
 import config from '../infra/config/index';
 import { HTTPErrorResponseCode } from './errors/ErrorResponseCodes';
 import { NoRequestBodyFound } from './errors/ClientError/NoRequestBodyFound';
@@ -15,8 +15,6 @@ import { ValidationError } from './errors/ClientError/ValidationError';
 import { NoSessionFound } from './errors/ClientError/AuthenticationError/NoSessionFound';
 
 export default class Middleware {
-    private logger: Logger = Logger.getInstance();
-
     private _error (res: Response, code: HTTPErrorResponseCode, error: any) {
         return res.status(code).json(error);
     };
@@ -47,7 +45,7 @@ export default class Middleware {
                 let errors = [];
 
                 for (const key in results) {
-                    this.logger.error(`[Validation Error]: ${results[key]}`);
+                    ServerLogger.error(`[Validation Error]: ${results[key]}`);
                     errors.push(...results[key])
                 };
 

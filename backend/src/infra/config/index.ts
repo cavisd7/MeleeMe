@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 
+//import { ServerLogger } from '../utils/logging';
 import NoNodeEnvError from '../errors/NoNodeEnvError';
 import NoDotenvError from '../errors/NoDotenvFile';
 
@@ -13,6 +14,9 @@ if (!NODE_ENV) {
 
 // https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
 const dotenvFile = `.env.${NODE_ENV}`;
+
+//ServerLogger.info(`Using env file: ${dotenvFile}`);
+console.log(`Using env file: ${dotenvFile}`)
 
 if (fs.existsSync(dotenvFile)) {
     dotenv.config({ path: dotenvFile });
@@ -70,7 +74,8 @@ export default {
     },
     jwtSecret: process.env.JWT_SECRET,
     /* LOGGER configs */
-    logOutputPath: path.resolve(appDir, 'server.log'),
+    combinedLogPath: path.resolve(appDir, 'logs/combined.log'),
+    errorLogPath: path.resolve(appDir, 'logs/error.log'),
     logs: {
         level: process.env.LOG_LEVEL
     },

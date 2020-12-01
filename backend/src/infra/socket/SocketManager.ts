@@ -2,22 +2,16 @@ import ws, { Server } from 'ws';
 import http from 'http';
 import * as uuid from 'uuid';
 
-import { PubSub, IPubSub } from '../store/PubSub'; 
 import WebSocket from 'ws';
-import { EventEmitter } from 'typeorm/platform/PlatformTools';
 import { CreateNewMatchEmitter } from './events/matchmaking/CreateNewMatchEmitter';
 import { MatchmakingEventEmitter } from './events/matchmaking/MatchmakingEventEmitter';
 import { MatchmakingService } from '../../api/controllers/matchmaking/MatchmakingService'
 import { ChatEventEmitter } from './events/chat/ChatEventEmitter';
-import { ChatService } from '../../api/controllers/chat/ChatService'
-//import { IRedisClient } from '../store/RedisClient';
 import cookie from 'cookie';
-import cookie_parser from 'cookie-parser';
 import config from '../config/index';
 import Pub, { Redis } from 'ioredis';
-import { deepCopy } from '../utils/helperFunctions';
 import { chatService } from '../../api/controllers/user/index';
-//import RedisClient from '../store/RedisClient';
+import Store from '../store';
 
 namespace ServerResponse {
     export const NEW_MATCH_REQUEST = 'NEW_MATCH_REQUEST';
@@ -108,7 +102,7 @@ interface Client {
 export class SocketManager implements ISocketManager {
     public server: ws.Server; 
     private sub;
-    private sessionClient: Redis;
+    //private sessionClient: Redis;
     private clients: Map<string, Client>;
 
     //private eventEmitter: EventEmitter; 
@@ -116,7 +110,7 @@ export class SocketManager implements ISocketManager {
     private matchmakingEmitter: MatchmakingEventEmitter<{ any: any }>;
     private chatEmitter: ChatEventEmitter<{ any: any }>;
 
-    constructor (sessionClient: Redis) {
+    constructor () {
         this.clients = new Map();
 
         this.server = new ws.Server({ noServer: true });
@@ -125,11 +119,11 @@ export class SocketManager implements ISocketManager {
         //this.server.on('close', () => console.log('HIIIIIIIIIIIIIIIIIIIIII'));//
         //this.server.on('error', this._onError);
 
-        this.sessionClient = sessionClient;
+        //this.sessionClient = sessionClient;
         /*this.sub = new PubSub();
         this.sub.subscribeToChannels(['SERVER', 'MATCHES', 'GROUP']); //TODO: move
         this.sub.registerCallback(this._handleRedisMessage.bind(this));*/ //TODO: fix
-        this.sub = new Pub(Number.parseInt(config.redisPort, 10), config.redisHost);
+        this.sub = new Pub(config.redisPort, config.redisHost);
         this.sub.subscribe(['SERVER', 'MATCHES', 'GROUP'], (err, count) => {
             if (err) {
                 console.log('error subscribing to channel')
@@ -176,7 +170,7 @@ export class SocketManager implements ISocketManager {
             }
             
             //room:[matchId] = [...userId]
-            const pipeline = this.sessionClient.pipeline();
+            const pipeline = Store.client.pipeline();
 
             session.user.matchIds.forEach(match => {
                 pipeline.sadd(`room:${match}`, session.user.userId);
@@ -213,7 +207,7 @@ export class SocketManager implements ISocketManager {
         const sessionId = `sess:${cookies['syd'].split('.')[0].split(':')[1]}`;
         //console.log('[ws checkAuth] sessionId: ', sessionId);
         
-        const session = await this.sessionClient.get(sessionId);
+        const session = await Store.client.get(sessionId);
 
         if (!session) {
             console.log('[ws checkAuth] error getting session: ');
@@ -233,7 +227,7 @@ export class SocketManager implements ISocketManager {
     };
 
     private async saveSession (sessionId: string, session: any/*Express.Session*/) {
-        return await this.sessionClient.set(sessionId, JSON.stringify(session));
+        return await Store.client.set(sessionId, JSON.stringify(session));
     }
 
     private async _onClose (code: number, data: string, socketId: string) {
@@ -268,10 +262,10 @@ export class SocketManager implements ISocketManager {
                 const client = this._getClient(socketId);
 
                 this.matchmakingEmitter.matchConfirmed({ matchId: payload.matchId, ownerId: client.session.user.userId });
-                await this.sessionClient.publish(channel, JSON.stringify({ /*socketId,*/ type, payload, ownerId: client.session.user.userId}));
+                await Store.client.publish(channel, JSON.stringify({ /*socketId,*/ type, payload, ownerId: client.session.user.userId}));
                 break;
             case SocketMessage.DENY_MATCH: 
-                await this.sessionClient.publish(channel, JSON.stringify({ /*socketId,*/ type, payload}));
+                await Store.client.publish(channel, JSON.stringify({ /*socketId,*/ type, payload}));
 
                 //TODO: might need to wait until this is done?
                 this.matchmakingEmitter.cleanupDeniedMatch({ 
@@ -290,18 +284,18 @@ export class SocketManager implements ISocketManager {
                 //TODO: when request is public again and someone tries to negotiate, it will try to create the same match in db again
                 this.createNewMatchEmitter.emit('create_new_match_request', rest);
                 //TODO: check type
-                await this.sessionClient.publish(Channel.MATCHES, JSON.stringify({ /*socketId,*/ type: SocketMessage.CREATE_MATCH_REQUEST, payload: rest}));
+                await Store.client.publish(Channel.MATCHES, JSON.stringify({ /*socketId,*/ type: SocketMessage.CREATE_MATCH_REQUEST, payload: rest}));
                 break;
             case SocketMessage.CREATE_MATCH_REQUEST:
                 //socket.emit('error', new Error('test error'))
 
                 //match request should be saveed to db
                 this.createNewMatchEmitter.emit('create_new_match_request', payload);
-                await this.sessionClient.publish(channel, JSON.stringify({ /*socketId,*/ type, payload}));
+                await Store.client.publish(channel, JSON.stringify({ /*socketId,*/ type, payload}));
                 break;
             default:
                 console.log('default', {socketId, type, payload, channel})
-                await this.sessionClient.publish(channel, JSON.stringify({ /*socketId,*/ type, payload}));
+                await Store.client.publish(channel, JSON.stringify({ /*socketId,*/ type, payload}));
                 break;                                     
         };
     };
@@ -332,7 +326,7 @@ export class SocketManager implements ISocketManager {
                         })
 
                         //add to active users on match room
-                        this.sessionClient.sadd(`room:${payload.matchId}`, payload.ownerUserId);
+                        Store.client.sadd(`room:${payload.matchId}`, payload.ownerUserId);
 
                         //persist match in db via service
                         this.matchmakingEmitter.createNewMatch(payload);
@@ -357,11 +351,11 @@ export class SocketManager implements ISocketManager {
                         //const ackPayload: IRedisMessage = Object.assign(payload, { type: SocketMessage.MATCH_REQUEST_ACK, socketId })
                         const ackPayload = { type: SocketMessage.MATCH_REQUEST_ACK, payload }
                         console.log('ACKPAYLOAD', ackPayload)
-                        this.sessionClient.publish(Channel.SERVER, JSON.stringify(ackPayload));
+                        Store.client.publish(Channel.SERVER, JSON.stringify(ackPayload));
                         //TODO: remove match from match request list in redis?
                         //tell all clients to remove matchId from their redux store
                         const removeMatchMessage: any/*IRedisMessage*/ = { type: SocketMessage.REMOVE_MATCH, payload: payload.matchId };
-                        this.sessionClient.publish(Channel.MATCHES, JSON.stringify(removeMatchMessage));
+                        Store.client.publish(Channel.MATCHES, JSON.stringify(removeMatchMessage));
                     } catch (_) {
                         console.log('could not find socket')
                         return;
@@ -380,7 +374,7 @@ export class SocketManager implements ISocketManager {
                         })
 
                         //add to active users on match room
-                        this.sessionClient.sadd(`room:${payload.matchId}`, payload.challengerUserId);
+                        Store.client.sadd(`room:${payload.matchId}`, payload.challengerUserId);
 
                         //add matchId to session subscriptions
                         const updatedSession = Object.assign(
@@ -420,7 +414,7 @@ export class SocketManager implements ISocketManager {
                 console.log('in group', payload, type)
                 //room:[matchId] = [...userId]
                 //get active users of match from redis
-                const aliveUsers = await this.sessionClient.smembers(`room:${payload.matchId}`);
+                const aliveUsers = await Store.client.smembers(`room:${payload.matchId}`);
 
                 const usersOnServer = aliveUsers.filter(user => {
                     const client = this._getClient(`ws.${user}`);

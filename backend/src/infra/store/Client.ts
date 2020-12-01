@@ -30,7 +30,7 @@ export class Client implements IClient {
             ServerLogger.info(`Attempting to connect to redis database @${this.host}:${this.port}...`);
 
             await this.client.connect()
-                .then((res) => {
+                .then(() => {
                     ServerLogger.info(`Connected to redis database @ ${this.host}:${this.port} successfully`);
                     resolve(this.client);
                 })
@@ -49,4 +49,4 @@ export class Client implements IClient {
     private onError (err) {
         ServerLogger.error('Redis error');
     };
-}
+};

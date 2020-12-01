@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { ServerLogger } from '../../../../infra/utils/logging';
 import { BaseController } from "../../BaseController";
 
 export class LogoutUserController extends BaseController {
@@ -8,7 +9,7 @@ export class LogoutUserController extends BaseController {
         try {
             /*Remove session from store */
             req.session.destroy(() => {
-                this.logger.info('Session successfully destroyed');
+                ServerLogger.info('Session successfully destroyed');
             });
 
             /*CLear session cookie */

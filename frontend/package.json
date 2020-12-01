@@ -7,7 +7,7 @@
     "module-cost-prod": "cost-of-modules --less",
     "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "typecheck": "tsc --noEmit",
-    "start:dev": "node scripts/devServer.js",
+    "dev:start": "node scripts/devServer.js",
     "test:watch": "jest --watch",
     "test": "jest",
     "build": "webpack --config ./config/webpack.prod.js"

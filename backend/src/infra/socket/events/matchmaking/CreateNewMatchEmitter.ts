@@ -26,7 +26,7 @@ class CreateNewMatchEmitter extends BaseEmitter<EventName> {
     private constructor() {
         super();
 
-        this.store = new Redis(Number.parseInt(config.redisPort, 10), config.redisHost);//TODO: redis client management
+        this.store = new Redis(config.redisPort, config.redisHost);//TODO: redis client management
         this.registerListener();
     };
 

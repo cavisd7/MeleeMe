@@ -25,7 +25,7 @@ class MatchmakingService implements IMatchService {
     //TODO: remove sub client
     constructor () {
         //this.sub = sub;
-        this.store = new Redis(Number.parseInt(config.redisPort, 10), config.redisHost);
+        this.store = new Redis(config.redisPort, config.redisHost);
         this.matchRepository = getConnection().getCustomRepository(MatchRepository);
         this.messageRepository = getConnection().getCustomRepository(MessageRepository);
     };

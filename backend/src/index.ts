@@ -2,12 +2,13 @@ import "reflect-metadata";
 
 /* Load .env variables */
 import config from './infra/config';
-import './infra/AWS';
 import { ServerLogger } from './infra/utils/logging';
+import './infra/AWS';
 
 import { Server } from './Server';
 import { createExpressApp } from './infra/loaders/expressLoader';
 import { connectToDb } from './infra/loaders/dbLoader';
+import createSessionMiddleware from './infra/sessionMiddleware';
 
 const initServices = async () => {
     const { default: Client } = await import('./infra/store');
@@ -18,14 +19,15 @@ const initServices = async () => {
     .then(([client]) => {
         ServerLogger.info('All services initialized successfully');
 
-        const app = createExpressApp();
-        const server = new Server(app);
+        const authenticateSession = createSessionMiddleware(client);
+        const app = createExpressApp(authenticateSession);
+        const server = new Server(app, authenticateSession);
 
         return server;
-    })
-}
+    });
+};
 
-const initServer = async (config): Promise<Server> => {
+const initServer = async (): Promise<Server> => {
     ServerLogger.info('Initializing server...');
 
     return connectToDb()
@@ -43,7 +45,7 @@ const initServer = async (config): Promise<Server> => {
         });
 };
 
-initServer(config)
+initServer()
     .then(server => {
         ServerLogger.info('Server initialized successfully');
         server.start();

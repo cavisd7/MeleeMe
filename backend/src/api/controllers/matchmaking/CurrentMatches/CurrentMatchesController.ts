@@ -2,6 +2,7 @@ import express from 'express';
 
 import { BaseController } from "../../BaseController";
 import { CurrentMatchesControllerLogic } from './CurrentMatchesControllerLogic';
+import { ServerLogger } from '../../../../infra/utils/logging';
 
 class CurrentMatchesController extends BaseController {
     private Controllerlogic: CurrentMatchesControllerLogic;
@@ -14,8 +15,8 @@ class CurrentMatchesController extends BaseController {
 
     public async executeImpl (req: express.Request, res: express.Response): Promise<void> {
         try {
-            this.logger.info('matchmaking/current')
-            console.log('[matchmaking/current]', req.session)
+            ServerLogger.info('matchmaking/current')
+            //console.log('[matchmaking/current]', req.session)
 
             const result = await this.Controllerlogic.execute();
 

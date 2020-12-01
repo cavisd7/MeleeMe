@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { ServerLogger } from '../../../../infra/utils/logging';
 import { BaseController } from "../../BaseController";
 import { GetMatchesControllerLogic } from './GetMatchesControllerLogic'
 import { UserAuthDTO } from '../UserAuthDTO';
@@ -34,7 +35,7 @@ class GetMatchesController extends BaseController {
             }
 
         } catch (err) {
-            this.logger.error(`failed in controller ${err.toString()}`)
+            ServerLogger.error(`failed in controller ${err.toString()}`)
             this.fail(res, new Error('failed in controller'));
         };
     };

@@ -1,15 +1,11 @@
 import { ClientError } from '../errors/ClientError/index';
 import { DatabaseError } from '../errors/DatabaseError';
-import Logger from '../../infra/utils/Logger';
+import { ServerLogger } from '../../infra/utils/logging';
 import { ServerError } from '../errors/ServerError';
 import { AuthenticationError } from '../errors/ClientError/AuthenticationError/index';
 
 export abstract class BaseController {
-    protected logger: Logger;
-
-    constructor () {
-        this.logger = Logger.getInstance();
-    };
+    constructor () {};
 
     //feature's controller logic
     protected abstract executeImpl (req, res): Promise<void | any>;
@@ -19,7 +15,7 @@ export abstract class BaseController {
         try {
             await this.executeImpl(req, res)
         } catch (error) {
-            this.logger.error(`Catching in BaseController`);
+            ServerLogger.error(`Catching in BaseController`);
             this.fail(res)
         };
     };
