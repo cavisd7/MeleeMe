@@ -5,7 +5,7 @@ import stream from 'stream';
 import config from './infra/config/index';
 import { ServerLogger, AppLogger } from './infra/utils/logging';
 import { SocketManager } from './infra/socket/SocketManager';
-import { SocketServer } from './infra/socket/SocketServer';
+import { SocketServer } from './infra/sockets/SocketServer';
 
 interface IServer {
     start: () => void;
@@ -102,8 +102,8 @@ export class Server implements IServer {
 
                 const session = Object.assign({}, (req as any).session, { sessionId: `sess:${(req as any).session.id}` });
 
-                this.SocketServer.wss.handleUpgrade(req, socket, head, (ws) => {
-                    this.SocketServer.wss.emit('connection', ws, req, session);
+                this.SocketServer.wss.handleUpgrade(req, socket, head, (socket) => {
+                    this.SocketServer.wss.emit('connection', socket, req, session);
                 });
             } else {
                 AppLogger.error('Invalid user session');

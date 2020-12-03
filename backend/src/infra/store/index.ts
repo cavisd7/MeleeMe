@@ -1,4 +1,7 @@
 import { Client } from './Client';
-const RedisClient = new Client();
+import { PubSub as PubSubClient } from './PubSub';
 
-export default RedisClient;
+const Store = new Client();
+const PubSub = new PubSubClient();
+
+export { Store, PubSub };

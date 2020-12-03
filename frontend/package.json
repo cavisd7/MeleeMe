@@ -10,7 +10,9 @@
     "dev:start": "node scripts/devServer.js",
     "test:watch": "jest --watch",
     "test": "jest",
-    "build": "webpack --config ./config/webpack.prod.js"
+    "build": "webpack --config ./config/webpack.prod.js",
+    "dev:docker:start": "docker-compose -f docker-compose.yaml up -d --force-recreate",
+    "dev:docker:stop": "docker-compose -f docker-compose.yaml down"
   },
   "keywords": [],
   "author": "",

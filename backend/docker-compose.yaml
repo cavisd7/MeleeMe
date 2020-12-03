@@ -9,12 +9,16 @@ services:
       - ./.env.development
     ports:
       - '5432:5432'
+    networks: 
+      - meleeme-net
   redisdb:
     image: redis:latest
     volumes:
       - redisdata:/data
     ports:
       - '6379:6379'
+    networks: 
+      - meleeme-net
   meleeme-backend: 
     build: ./
     deploy:
@@ -25,9 +29,15 @@ services:
       - ./:/app
     ports:
       - '4000:4000'
+    networks: 
+      - meleeme-net
     depends_on: 
       - db
       - redisdb
+
+networks:
+  meleeme-net:
+    driver: bridge
       
 volumes:
   redisdata:

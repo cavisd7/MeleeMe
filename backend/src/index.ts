@@ -8,18 +8,19 @@ import './infra/AWS';
 import { Server } from './Server';
 import { createExpressApp } from './infra/loaders/expressLoader';
 import { connectToDb } from './infra/loaders/dbLoader';
-import createSessionMiddleware from './infra/sessionMiddleware';
+import createSessionMiddleware from './api/middleware/sessionMiddleware';
 
 const initServices = async () => {
-    const { default: Client } = await import('./infra/store');
+    const { Store, PubSub } = await import('./infra/store');
 
     return Promise.all([
-        Client.connect()
+        Store.connect(),
+        PubSub.connect()
     ])
-    .then(([client]) => {
+    .then(([store, _]) => {
         ServerLogger.info('All services initialized successfully');
 
-        const authenticateSession = createSessionMiddleware(client);
+        const authenticateSession = createSessionMiddleware(store);
         const app = createExpressApp(authenticateSession);
         const server = new Server(app, authenticateSession);
 

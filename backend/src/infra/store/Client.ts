@@ -1,4 +1,4 @@
-import IORedis, { Redis } from 'ioredis';
+import IORedis, { Redis as RedisClient } from 'ioredis';
 
 import config from '../config/index'
 import { ServerLogger } from '../utils/logging';
@@ -16,7 +16,7 @@ interface IClient {
 export class Client implements IClient {
     private host: string;
     private port: number;
-    public client: Redis;
+    public client: RedisClient;
 
     constructor() {
         this.host = config.redisHost;
@@ -25,6 +25,7 @@ export class Client implements IClient {
         this.client = new IORedis(this.port, this.host, { lazyConnect: true });
     };
 
+    //TODO: handle failed connect and reconnect
     public connect(): Promise<any> {
         return new Promise(async (resolve, reject) => {
             ServerLogger.info(`Attempting to connect to redis database @${this.host}:${this.port}...`);

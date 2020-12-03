@@ -5,6 +5,7 @@ export interface IPubSub {
     unsubscribeFromChannels (channels: string[] | string): Promise<number>;
     publishToChannel (channel: string, message: string): Promise<number>;
     registerCallback (fn: any): void;
+    getSubscriptionCount (): number;
 };
 
 export class PubSub extends Client implements IPubSub {
@@ -12,8 +13,6 @@ export class PubSub extends Client implements IPubSub {
 
     constructor () {
         super();
-
-        //connect
 
         this.subscriptionCount = 0;
     };
@@ -24,7 +23,7 @@ export class PubSub extends Client implements IPubSub {
 
     public async subscribeToChannels (channels: string[]): Promise<void> {
         await this.client.subscribe([...channels])
-            .then(count => this.subscriptionCount += count);
+            .then(count => this.subscriptionCount = count);
     };
 
     public async unsubscribeFromChannels (channels: string[] | string): Promise<number> {

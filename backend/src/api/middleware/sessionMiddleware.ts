@@ -1,7 +1,7 @@
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 
-import config from './config/index';
+import config from '../../infra/config/index';
 
 const createSessionMiddleware = (client) => {
     const Store = connectRedis(session);

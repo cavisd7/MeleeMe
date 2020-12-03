@@ -23,6 +23,7 @@ import { Notifications } from 'types/notification';
 
 /* Components */
 import MainWrapper from './components/MainWrapper';
+import { EnvironmentPlugin } from 'webpack';
 
 type CombinedProps = StoreProps & DispatchProps & RouteComponentProps;
 
@@ -41,7 +42,7 @@ class App extends React.Component<CombinedProps, ComponentState> {
         }
 
         if (this.props.isAuthenticated) {
-            this.props.connectSocketDispatch(process.env.NODE_ENV === 'production' ? 'wss://api.meleeme.net' : 'ws://localhost:4000');
+            this.props.connectSocketDispatch(process.env.NODE_ENV === 'production' ? process.env.WS_ROOT_PROD : process.env.IS_DOCKER ? process.env.WS_ROOT_DEV_DOCK : process.env.WS_ROOT_DEV_LOCAL);
             this.props.getUsersMatchesDispatch();
         };
     };
@@ -52,7 +53,7 @@ class App extends React.Component<CombinedProps, ComponentState> {
         }
 
         if (this.props.isAuthenticated && !prevProps.isAuthenticated && !this.props.isSocketConnected) {
-            this.props.connectSocketDispatch(process.env.NODE_ENV === 'production' ? 'wss://api.meleeme.net' : 'ws://localhost:4000');
+            this.props.connectSocketDispatch(process.env.NODE_ENV === 'production' ? process.env.WS_ROOT_PROD : process.env.IS_DOCKER ? process.env.WS_ROOT_DEV_DOCK : process.env.WS_ROOT_DEV_LOCAL);
             this.props.getUsersMatchesDispatch();
         };
     };

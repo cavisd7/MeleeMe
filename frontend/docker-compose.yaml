@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  meleeme-frontend: 
+    build: ./
+    volumes:
+      - ./:/app
+    ports:
+      - '3000:3000'
+    networks: 
+      - backend_meleeme-net
+
+networks:
+  backend_meleeme-net:
+    external: true
