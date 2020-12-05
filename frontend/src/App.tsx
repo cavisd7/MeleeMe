@@ -42,7 +42,7 @@ class App extends React.Component<CombinedProps, ComponentState> {
         }
 
         if (this.props.isAuthenticated) {
-            this.props.connectSocketDispatch(process.env.NODE_ENV === 'production' ? process.env.WS_ROOT_PROD : process.env.IS_DOCKER ? process.env.WS_ROOT_DEV_DOCK : process.env.WS_ROOT_DEV_LOCAL);
+            this.props.connectSocketDispatch(process.env.APP_WS_ROOT);
             this.props.getUsersMatchesDispatch();
         };
     };
@@ -53,7 +53,7 @@ class App extends React.Component<CombinedProps, ComponentState> {
         }
 
         if (this.props.isAuthenticated && !prevProps.isAuthenticated && !this.props.isSocketConnected) {
-            this.props.connectSocketDispatch(process.env.NODE_ENV === 'production' ? process.env.WS_ROOT_PROD : process.env.IS_DOCKER ? process.env.WS_ROOT_DEV_DOCK : process.env.WS_ROOT_DEV_LOCAL);
+            this.props.connectSocketDispatch(process.env.APP_WS_ROOT);
             this.props.getUsersMatchesDispatch();
         };
     };
