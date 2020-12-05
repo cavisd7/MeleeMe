@@ -11,7 +11,7 @@ import cookie from 'cookie';
 import config from '../config/index';
 import Pub, { Redis } from 'ioredis';
 import { chatService } from '../../api/controllers/user/index';
-import { Store } from '../store';
+import Store from '../store';
 
 namespace ServerResponse {
     export const NEW_MATCH_REQUEST = 'NEW_MATCH_REQUEST';

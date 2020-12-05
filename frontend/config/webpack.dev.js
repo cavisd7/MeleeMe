@@ -1,7 +1,4 @@
 'use strict';
-
-process.env.NODE_ENV = 'development';
-
 const path = require('path');
 const fs = require('fs');
 
@@ -12,14 +9,11 @@ const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeM
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const injectEnvironment = require('./env');
 
 const appDir = fs.realpathSync(process.cwd());
 const publicPath = '/';
 const publicUrl = '';
 const tsconfigPath = path.resolve(appDir, 'tsconfig.json');
-
-const env = injectEnvironment();
 
 module.exports = {
     mode: 'development',
@@ -110,7 +104,6 @@ module.exports = {
         new InterpolateHtmlPlugin(HtmlWebpackPlugin, {
             PUBLIC_URL: publicUrl
         }),
-        new webpack.DefinePlugin(env),
         new webpack.HotModuleReplacementPlugin(),
         new WatchMissingNodeModulesPlugin(path.resolve(appDir, 'node_modules')),
         new ForkTsCheckerWebpackPlugin({
