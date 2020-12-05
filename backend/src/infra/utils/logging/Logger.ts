@@ -2,7 +2,7 @@ import fs from 'fs';
 import * as uuid from 'uuid';
 import winston from 'winston';
 
-import config from '../../config/index';
+import config from '../../config';
 
 interface ILogger {
     error: (message: string) => void;

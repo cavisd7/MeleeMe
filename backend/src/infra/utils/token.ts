@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
 
-import config from '../config/index';
+import config from '../config';
 
 const createToken = (payload: object, expiresIn?: number): string => {
     return jwt.sign(

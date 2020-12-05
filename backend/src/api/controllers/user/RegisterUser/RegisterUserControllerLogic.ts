@@ -2,7 +2,7 @@ import { ControllerLogic } from '../../ControllerLogic';
 import { IRegisterUserBody } from '../RegisterUser/schema';
 import { IUserService } from '../UserService'
 import { UserAuthDTO } from '../UserAuthDTO';
-import { Result, Either, Left, Right, left, right } from '../../../Result';
+import { Result, Either, Left, Right, left, right } from '../../../../infra/utils/Result';
 import { toDTO } from '../UserMapper';
 import { UserAlreadyExists } from '../../../errors/ClientError/UserAlreadyExists';
 import { InvalidPassword } from '../../../errors/ClientError/AuthenticationError/InvalidPassword';

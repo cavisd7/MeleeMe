@@ -2,7 +2,7 @@ import http from 'http';
 import cookie from 'cookie';
 import stream from 'stream';
 
-import config from './infra/config/index';
+import config from './infra/config';
 import { ServerLogger, AppLogger } from './infra/utils/logging';
 import { SocketManager } from './infra/socket/SocketManager';
 import { SocketServer } from './infra/sockets/SocketServer';

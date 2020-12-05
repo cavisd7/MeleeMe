@@ -1,7 +1,7 @@
 import { BaseEmitter } from "../BaseEmitter";
 //import RedisClient from "../../../store/RedisClient";
 import Redis from 'ioredis';
-import config from '../../../config/index';
+import config from '../../../config';
 
 type EventName = { create_new_match_request: MatchRequest };
 

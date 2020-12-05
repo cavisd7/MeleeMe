@@ -1,6 +1,6 @@
 import { CurrentMatchesController } from './CurrentMatchesController';
 import { CurrentMatchesControllerLogic } from './CurrentMatchesControllerLogic';
-import config from '../../../../infra/config/index';
+import config from '../../../../infra/config';
 //import RedisClient from '../../../../infra/store/RedisClient';
 import Redis from 'ioredis';
 

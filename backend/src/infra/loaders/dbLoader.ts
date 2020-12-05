@@ -4,7 +4,7 @@ import {
     Connection 
 } from 'typeorm';
 
-import config from '../config/index';
+import config from '../config';
 import { ServerLogger } from '../utils/logging';
 
 export const connectToDb = async (): Promise<Connection> => {

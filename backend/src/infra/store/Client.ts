@@ -1,6 +1,6 @@
 import IORedis, { Redis as RedisClient } from 'ioredis';
 
-import config from '../config/index'
+import config from '../config'
 import { ServerLogger } from '../utils/logging';
 
 interface ClientConfig {

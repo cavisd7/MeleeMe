@@ -1,7 +1,7 @@
 import { ControllerLogic } from '../../ControllerLogic';
 import { IUserService } from '../UserService'
 import { UserAuthDTO } from '../UserAuthDTO';
-import { Either, left, right } from '../../../Result';
+import { Either, left, right } from '../../../../infra/utils/Result';
 import { toDTO } from '../UserMapper';
 import { UserDoesNotExist } from '../../../errors/ClientError/AuthenticationError/UserDoesNotExist';
 import { UpdateError } from '../../../errors/DatabaseError/UpdateError';

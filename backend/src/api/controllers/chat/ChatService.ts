@@ -4,7 +4,7 @@ import MessageRepository from '../../../domain/repository/message/MessageReposit
 import MatchRepository from '../../../domain/repository/matchmaking/MatchRepository';
 
 import { Message } from '../../../domain/types/message';
-import { Result } from '../../Result';
+import { Result } from '../../../infra/utils/Result';
 import { User } from '../../../domain/entity/User';
 import { UserMatch } from '../../../domain/types/match';
 

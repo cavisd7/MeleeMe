@@ -5,20 +5,21 @@ import { ServerLogger } from '../utils/logging/index';
 import { AppLogger } from '../utils/logging/index';
 import { Store, PubSub } from '../store';
 import { subscribeToChannels } from './events';
+import { bundleMessage, parseMessage, verifySession } from '../utils/socketUtils';
 
 /* Socket request and response types */
-import { ServerResponseType, ServerResponse } from './types'; 
+import { 
+    ServerResponseType, 
+    ServerResponse,
+    Client,
+    Socket,
+    ISocketMessage
+} from './types'; 
+import { SocketHandler } from './handlers/SocketHandler';
 
-//type SessionTransport = Express.Session & { sessionId: string };
-
-interface Client {
-    sessionId: string; //express-session id
-    session: any; //: Express.Session;
-    socket: Socket;
-    isAlive: boolean;
-};
-
-type Socket = ws & { id: string };
+/* Services */
+import MatchmakingHandler from './handlers/MatchmakingHandler';
+import ChatHandler from './handlers/ChatHandler';
 
 export class SocketServer {
     public wss: ws.Server;
@@ -26,8 +27,15 @@ export class SocketServer {
     private clients: Map<string, Client>;
     private heartbeatInterval: NodeJS.Timeout | null;
 
+    /* Action handlers */
+    private matchmaking;
+    private chat;
+
     constructor() {
         this.clients = new Map<string, Client>();
+
+        this.matchmaking = new MatchmakingHandler();
+        this.chat = new ChatHandler();
         
         this.wss = new ws.Server({ noServer: true });
         this.wss.on('connection', (socket, req, session) => this.onConnection(socket, req, session));
@@ -37,7 +45,7 @@ export class SocketServer {
         this.wss.addListener('channel:subscribe', (channels: string[], socket?) => this.onChannelSubscribe(channels, socket));
 
         /* TODO: Fix names */
-        this.wss.emit('channel:subscribe', ['SERVER', 'MATCHES', 'GROUP'])
+        this.wss.emit('channel:subscribe', ['SERVER', 'MATCHES', 'GROUP']);
         
         this.startHeartbeat();
     };
@@ -94,10 +102,25 @@ export class SocketServer {
 
     private async handleSocketMessage(message: string, socketId: string, socket: Socket, req) {
         try {
-            /* Make sure session is still valid */
-            await this.verifySession(req);
+            const parsedData = parseMessage(message);
+            const { type, channel, payload } = parsedData;
 
-            //
+            /* Make sure session is still valid */
+            await verifySession(req);
+
+            /* e.g. matchmaking:create-match-request */
+            const [domain, action] = type.split(':');
+            const handler = this[domain] as SocketHandler;
+
+            if (!handler) {
+                socket.emit('error', new Error('Unknown action'));
+            };
+
+            /*if (handler.preHandle) {
+                await handler.preHandle();
+            };*/
+
+            await handler.exec(action, channel, JSON.stringify({ type, payload }));
         } catch (err) {
             socket.emit('error', new Error('Could not handle socket message'));
         };
@@ -115,27 +138,6 @@ export class SocketServer {
         this.send(socketId, ServerResponse.ERROR, { message: err.message });
     };
 
-    private async verifySession(req): Promise<string> {
-        /* TODO: Check cookie time */
-        const { sessionID } = req;
-
-        const session = await Store.client.get(`sesss:${sessionID}`);
-
-        if (!session) {
-            throw new Error('No session found');
-        };
-
-        let parsedSession;
-
-        try {
-            parsedSession = JSON.parse(session);
-        } catch (err) {
-            throw new Error('Failed to parse session, incorrect formatting');
-        };
-
-        return parsedSession;
-    };
-
     private send(socketId: string, type: ServerResponseType, payload: any): void {
         const client = this.getClient(socketId);
         
@@ -147,17 +149,13 @@ export class SocketServer {
         let message;
         
         try {
-            message = this.bundleMessage(type, payload);
+            message = bundleMessage(type, payload);
         } catch (err) {
             ServerLogger.error(`Error bundling socket message! ${err}`);
             throw new Error('Error bundling socket message');
         };
 
         client.socket.send(message);
-    };
-
-    private bundleMessage (type: string, payload: any): string {
-        return JSON.stringify({ type, payload });
     };
 
     private startHeartbeat() {

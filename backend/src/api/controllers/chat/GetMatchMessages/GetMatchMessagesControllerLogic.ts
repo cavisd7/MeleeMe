@@ -4,7 +4,7 @@ import { ControllerLogic } from '../../ControllerLogic';
 import { ChatService } from '../ChatService';
 import { MatchMessagesBody } from './schema';
 
-import { Result, Either, Left, Right, left, right } from '../../../Result';
+import { Result, Either, Left, Right, left, right } from '../../../../infra/utils/Result';
 import { Message } from '../../../../domain/types/message';
 
 type Response = Either<Error, Message[]>;

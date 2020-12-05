@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import helmet from 'helmet';
 
-import config from '../config/index';
+import config from '../config';
 import { rootRouter } from '../../api/routers/index';
 
 export const createExpressApp = (authenticateSession) => {

@@ -1,6 +1,6 @@
 import { ControllerLogic } from '../ControllerLogic';
 
-import { Either, left, right } from '../../Result';
+import { Either, left, right } from '../../../infra/utils/Result';
 import AWS from 'aws-sdk';
 
 import SlippiGame, { 
@@ -12,7 +12,7 @@ import SlippiGame, {
     OverallType,
     ActionCountsType 
 } from '@slippi/slippi-js';
- import config from '../../../infra/config/index';
+ import config from '../../../infra/config';
 import { GenericServerError } from '../../errors/ServerError/GenericServerError';
 
 type Response = Either<Error, SlpMatchData[]>;

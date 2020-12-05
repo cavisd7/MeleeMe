@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 //import { ServerLogger } from '../utils/logging';
-import NoNodeEnvError from '../errors/NoNodeEnvError';
-import NoDotenvError from '../errors/NoDotenvFile';
+import NoNodeEnvError from './errors/NoNodeEnvError';
+import NoDotenvError from './errors/NoDotenvFile';
 
 const NODE_ENV = process.env.NODE_ENV;
 

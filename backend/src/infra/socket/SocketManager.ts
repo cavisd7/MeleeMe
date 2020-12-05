@@ -8,7 +8,7 @@ import { MatchmakingEventEmitter } from './events/matchmaking/MatchmakingEventEm
 import { MatchmakingService } from '../../api/controllers/matchmaking/MatchmakingService'
 import { ChatEventEmitter } from './events/chat/ChatEventEmitter';
 import cookie from 'cookie';
-import config from '../config/index';
+import config from '../config';
 import Pub, { Redis } from 'ioredis';
 import { chatService } from '../../api/controllers/user/index';
 import Store from '../store';

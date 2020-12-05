@@ -2,7 +2,7 @@ import path from 'path';
 
 import { ControllerLogic } from '../../ControllerLogic';
 
-import { Result, Either, Left, Right, left, right } from '../../../Result';
+import { Result, Either, Left, Right, left, right } from '../../../../infra/utils/Result';
 //import RedisClient from '../../../../infra/store/RedisClient';
 
 //TODO: move

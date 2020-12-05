@@ -8,7 +8,7 @@ import './infra/AWS';
 import { Server } from './Server';
 import { createExpressApp } from './infra/loaders/expressLoader';
 import { connectToDb } from './infra/loaders/dbLoader';
-import createSessionMiddleware from './api/middleware/sessionMiddleware';
+import createSessionMiddleware from './api/middleware/createSessionMiddleware';
 
 const initServices = async () => {
     const { Store, PubSub } = await import('./infra/store');

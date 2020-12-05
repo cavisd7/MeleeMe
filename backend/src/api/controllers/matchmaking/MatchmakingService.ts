@@ -8,7 +8,7 @@ import { IPubSub } from '../../../infra/store/PubSub';
 import { UserMatches } from '../../../domain/entity/UserMatches';
 import MessageRepository from '../../../domain/repository/message/MessageRepository';
 import Redis from 'ioredis';
-import config from '../../../infra/config/index';
+import config from '../../../infra/config';
 
 interface IMatchService {
     createNewMatchRequest (matchRequest: MatchRequest): void;

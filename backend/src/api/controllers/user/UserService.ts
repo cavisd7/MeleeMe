@@ -6,7 +6,7 @@ import { InvalidPassword } from '../../errors/ClientError/AuthenticationError/In
 import { IUserRepository } from '../../../domain/repository/user/UserRepository';
 import { User } from '../../../domain/entity/User';
 import UserRepository from '../../../domain/repository/user/UserRepository';
-import { Result } from '../../Result';
+import { Result } from '../../../infra/utils/Result';
 import { IRegisterUserBody } from './RegisterUser/schema';
 import { PersistenceError } from '../../errors/DatabaseError/PersistenceError';
 import { GenericDatabaseError } from '../../errors/DatabaseError/GenericDatabaseError';

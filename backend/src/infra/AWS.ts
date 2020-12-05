@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 
-import config from './config/index';
+import config from './config';
 import { ServerLogger } from './utils/logging';
 
 let isAuthenticated = false;
