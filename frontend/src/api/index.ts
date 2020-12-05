@@ -2,11 +2,9 @@ import axios, { AxiosRequestConfig, Method, AxiosPromise } from 'axios';
 import { APIError } from './types';
 import { ObjectSchema, ValidationError } from 'yup';
 
-const API_ROOT = process.env.NODE_ENV === 'production' ? process.env.API_ROOT_PROD : process.env.IS_DOCKER ? process.env.API_ROOT_DEV_DOCK : process.env.API_ROOT_DEV_LOCAL;
+const API_ROOT = process.env.APP_API_ROOT;
 
-console.log('API_ROOT', API_ROOT)
-
-export const v1Request = axios.create({ baseURL: `${API_ROOT}`, withCredentials: true });
+export const v1Request = axios.create({ baseURL: `http://localhost:4000/api/v1`, withCredentials: true });
 
 v1Request.interceptors.response.use(response => {
     return response;
