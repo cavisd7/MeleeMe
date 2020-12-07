@@ -3,9 +3,6 @@ import express from 'express';
 import { ServerLogger } from '../../../../infra/utils/logging';
 import { BaseController } from "../../BaseController";
 import { GetMatchesControllerLogic } from './GetMatchesControllerLogic'
-import { UserAuthDTO } from '../UserAuthDTO';
-
-import { createToken } from '../../../../infra/utils/token';
 
 class GetMatchesController extends BaseController {
     private Controllerlogic: GetMatchesControllerLogic;
@@ -35,7 +32,8 @@ class GetMatchesController extends BaseController {
             }
 
         } catch (err) {
-            ServerLogger.error(`failed in controller ${err.toString()}`)
+            ServerLogger.error('[GetMatchesController] Error in controller');
+
             this.fail(res, new Error('failed in controller'));
         };
     };

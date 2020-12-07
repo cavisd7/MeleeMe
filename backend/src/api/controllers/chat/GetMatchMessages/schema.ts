@@ -1,4 +1,4 @@
-export interface MatchMessagesBody {
-    matchId: string;
-    range?: number;
-}
+export interface GetMatchMessagesBody {
+    matchId: string; 
+    range?: number
+};

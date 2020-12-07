@@ -14,9 +14,12 @@ interface IClient {
 };
 
 export class Client implements IClient {
+    public client: RedisClient;
+
     private host: string;
     private port: number;
-    public client: RedisClient;
+    
+    static readonly ttl = 86400;
 
     constructor() {
         this.host = config.redisHost;
@@ -39,6 +42,20 @@ export class Client implements IClient {
                     return reject(new Error('Could not establish a connection to redis db'));
                 });
         });
+    };
+
+    public async setMulHash(key: string, values: object, ttl?: number): Promise<any> {
+        return await this.client.multi()
+            .hmset(key, values)
+            .expire(key, ttl | Client.ttl)
+            .exec();
+    };
+
+    public async pushList(key: string, value: string, ttl?: number): Promise<any>  {
+        return await this.client.multi()
+            .lpush(key, value)
+            .expire(key, ttl | Client.ttl)
+            .exec()
     };
 
     public getConnectionInfo() {};

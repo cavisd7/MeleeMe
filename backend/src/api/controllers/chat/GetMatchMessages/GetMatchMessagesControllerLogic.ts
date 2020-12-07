@@ -1,22 +1,20 @@
-import path from 'path';
-
 import { ControllerLogic } from '../../ControllerLogic';
 import { ChatService } from '../ChatService';
-import { MatchMessagesBody } from './schema';
+import { GetMatchMessagesBody } from './schema';
 
-import { Result, Either, Left, Right, left, right } from '../../../../infra/utils/Result';
+import { Either, left, right } from '../../../../infra/utils/Result';
 import { Message } from '../../../../domain/types/message';
 
 type Response = Either<Error, Message[]>;
 
-class GetMatchMessagesControllerLogic implements ControllerLogic<{ matchId: string; range: number }, Response> {
+class GetMatchMessagesControllerLogic implements ControllerLogic<GetMatchMessagesBody, Response> {
     private ChatService: ChatService;
 
     constructor (ChatService: ChatService) {
         this.ChatService = ChatService;
     };
 
-    public async execute (params: { matchId: string, range: number }): Promise<Response> {
+    public async execute (params: GetMatchMessagesBody): Promise<Response> {
         const { matchId, range } = params;
 
         const matchesOrError = await this.ChatService.getMatchMessages(matchId);

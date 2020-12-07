@@ -2,10 +2,11 @@ import { ControllerLogic } from '../../ControllerLogic';
 import { ILoginUserBody } from './schema';
 import { IUserService } from '../UserService'
 import { UserAuthDTO } from '../UserAuthDTO';
-import { Result, Either, Left, Right, left, right } from '../../../../infra/utils/Result';
+import { Either, left, right } from '../../../../infra/utils/Result';
 import { toDTO } from '../UserMapper';
 import { UserDoesNotExist } from '../../../errors/ClientError/AuthenticationError/UserDoesNotExist';
 import { InvalidPassword } from '../../../errors/ClientError/AuthenticationError/InvalidPassword';
+import { ServerLogger } from '../../../../infra/utils/logging';
 
 type Response = Either<UserDoesNotExist | InvalidPassword, UserAuthDTO>;
 
@@ -32,8 +33,8 @@ class LoginUserControllerLogic implements ControllerLogic<ILoginUserBody, Respon
 
             return right<UserAuthDTO>(dto);
         } catch (err) {
-            console.log('from logic', err)
-        }
+            ServerLogger.error('[LoginUserControllerLogic] Error in controller');
+        };
     };
 };
 

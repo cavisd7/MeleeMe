@@ -1,22 +1,16 @@
 import { ControllerLogic } from '../../ControllerLogic';
-import { IUserService } from '../UserService'
-import { UserAuthDTO } from '../UserAuthDTO';
-import { Result, Either, Left, Right, left, right } from '../../../../infra/utils/Result';
-import { toDTO } from '../UserMapper';
-import { UserDoesNotExist } from '../../../errors/ClientError/AuthenticationError/UserDoesNotExist';
-import { InvalidPassword } from '../../../errors/ClientError/AuthenticationError/InvalidPassword';
+import { Either, left, right } from '../../../../infra/utils/Result';
 import { ChatService } from '../../chat/ChatService';
 import { UserMatch } from '../../../../domain/types/match';
+import { ServerLogger } from '../../../../infra/utils/logging';
 
 //TODO: error type
 type Response = Either<Error, UserMatch[]>;
 
 class GetMatchesControllerLogic implements ControllerLogic<string[], Response> {
-    //private UserService: IUserService;
     private ChatService: ChatService;
 
-    constructor (/*UserService: IUserService, */ ChatService: ChatService) {
-        //this.UserService = UserService;
+    constructor (ChatService: ChatService) {
         this.ChatService = ChatService;
     };
 
@@ -28,8 +22,8 @@ class GetMatchesControllerLogic implements ControllerLogic<string[], Response> {
 
             return right<UserMatch[]>(matchesOrError.getValue());
         } catch (err) {
-            console.log('from logic', err)
-        }
+            ServerLogger.error('[GetMatchesControllerLogic] Error in controller');
+        };
     };
 };
 

@@ -1,9 +1,9 @@
 import express from 'express';
 
+import { AppLogger, ServerLogger } from '../../../../infra/utils/logging';
 import { BaseController } from "../../BaseController";
 import { DeleteUserControllerLogic } from './DeleteUserControllerLogic'
 import { IDeleteUserBody } from './schema';
-import { ServerLogger } from '../../../../infra/utils/logging';
 
 class DeleteUserController extends BaseController {
     private Controllerlogic: DeleteUserControllerLogic;
@@ -26,7 +26,7 @@ class DeleteUserController extends BaseController {
 
             /*Remove session from store */
             req.session.destroy(() => {
-                ServerLogger.info('Session successfully destroyed');
+                AppLogger.info('Session successfully destroyed');
             });
 
             /*Clear session cookie */
@@ -34,6 +34,8 @@ class DeleteUserController extends BaseController {
 
             return this.ok<any>(res, result.value);
         } catch (err) {
+            ServerLogger.error('[DeleteUserController] Error in controller');
+
             this.fail(res, new Error('failed in controller'));
         };
     };

@@ -15,9 +15,6 @@ class CurrentMatchesController extends BaseController {
 
     public async executeImpl (req: express.Request, res: express.Response): Promise<void> {
         try {
-            ServerLogger.info('matchmaking/current')
-            //console.log('[matchmaking/current]', req.session)
-
             const result = await this.Controllerlogic.execute();
 
             if (result.isLeft) { 
@@ -26,7 +23,8 @@ class CurrentMatchesController extends BaseController {
 
             return this.ok<any>(res, result.value);
         } catch (err) {
-            console.log('error in controller', err)
+            ServerLogger.error('[CurrentMatchesController] Error in controller');
+
             return this.fail(res, err.toString());
         };
     };

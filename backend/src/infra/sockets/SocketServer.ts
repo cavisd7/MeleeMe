@@ -13,9 +13,9 @@ import {
     ServerResponse,
     Client,
     Socket,
-    ISocketMessage
+    ISocketMessage,
+    SocketHandler
 } from './types'; 
-import { SocketHandler } from './handlers/SocketHandler';
 
 /* Services */
 import MatchmakingHandler from './handlers/MatchmakingHandler';
@@ -120,7 +120,7 @@ export class SocketServer {
                 await handler.preHandle();
             };*/
 
-            await handler.exec(action, channel, JSON.stringify({ type, payload }));
+            await handler.exec(action, channel, { type, payload });
         } catch (err) {
             socket.emit('error', new Error('Could not handle socket message'));
         };

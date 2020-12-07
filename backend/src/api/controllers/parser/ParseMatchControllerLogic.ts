@@ -1,18 +1,14 @@
-import { ControllerLogic } from '../ControllerLogic';
-
-import { Either, left, right } from '../../../infra/utils/Result';
 import AWS from 'aws-sdk';
-
 import SlippiGame, { 
-    GameStartType, 
-    MetadataType, 
-    StatsType, 
-    FramesType,
-    RatioType,
     OverallType,
     ActionCountsType 
 } from '@slippi/slippi-js';
- import config from '../../../infra/config';
+
+import config from '../../../infra/config';
+import { ServerLogger } from '../../../infra/utils/logging';
+import { ControllerLogic } from '../ControllerLogic';
+
+import { Either, left, right } from '../../../infra/utils/Result';
 import { GenericServerError } from '../../errors/ServerError/GenericServerError';
 
 type Response = Either<Error, SlpMatchData[]>;
@@ -34,7 +30,6 @@ interface PlayerInfo {
     character: number; 
     port: number;
     controllerFix: string;
-
     stats: PlayerStats;
     actions: ActionStats;
 }
@@ -121,7 +116,8 @@ class ParseMatchControllerLogic implements ControllerLogic<null, Response> {
                 })
             })
             .catch(err => {
-                console.log('err in promise chain')
+                ServerLogger.error('Error making S3 requests');
+
                 return left<GenericServerError>(new GenericServerError())
             })
 

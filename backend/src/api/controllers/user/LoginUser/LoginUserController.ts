@@ -31,16 +31,13 @@ class LoginUserController extends BaseController {
             const { userId, username, email, netcode, matchIds, dateJoined } = result.value as UserAuthDTO;
             (req.session as any).user = { userId, username, email, netcode, matchIds, dateJoined };
 
-            //const sessionExpiration = req.session.cookie.originalMaxAge;
-            //const payload = Object.assign(result.value, { sessionExpiration });
-            //console.log('pay', Date.now() + sessionExpiration);
-
             const authorizationToken = createToken({ foo: 'hi' });
 
             return this.ok<any>(res, { user: result.value, token: authorizationToken });
         } catch (err) {
-            ServerLogger.error(`failed in controller ${err.toString()}`)
-            this.fail(res, new Error('failed in controller'));
+            ServerLogger.error('[LoginUserController] Error in controller');
+
+            this.fail(res, new Error('Error in controller'));
         };
     };
 };

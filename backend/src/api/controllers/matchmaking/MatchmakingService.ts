@@ -1,31 +1,27 @@
+import Redis from 'ioredis';
 import { getConnection } from 'typeorm';
 
-//import RedisClient from "../../../infra/store/RedisClient";
-import MatchRepository from '../../../domain/repository/matchmaking/MatchRepository';
-
-import { MatchRequest, NegotiateMatchRequest } from '../../../domain/types/match';
-import { IPubSub } from '../../../infra/store/PubSub';
-import { UserMatches } from '../../../domain/entity/UserMatches';
-import MessageRepository from '../../../domain/repository/message/MessageRepository';
-import Redis from 'ioredis';
+import { AppLogger, ServerLogger } from '../../../infra/utils/logging';
 import config from '../../../infra/config';
+import { Store } from '../../../infra/store';
+
+import MatchRepository from '../../../domain/repository/matchmaking/MatchRepository';
+import MessageRepository from '../../../domain/repository/message/MessageRepository';
+import { UserMatches } from '../../../domain/entity/UserMatches';
+
+import { ConfirmMatch } from '../../../infra/types/matchmaking';
+import { MatchRequest, NegotiateMatchRequest } from '../../../domain/types/match';
 
 interface IMatchService {
     createNewMatchRequest (matchRequest: MatchRequest): void;
 }
 
 class MatchmakingService implements IMatchService {
-    public store;
-    //public store: RedisClient;
-    
-    //private sub: IPubSub;
     private matchRepository: MatchRepository;
     private messageRepository: MessageRepository;
 
     //TODO: remove sub client
     constructor () {
-        //this.sub = sub;
-        this.store = new Redis(config.redisPort, config.redisHost);
         this.matchRepository = getConnection().getCustomRepository(MatchRepository);
         this.messageRepository = getConnection().getCustomRepository(MessageRepository);
     };
@@ -34,10 +30,8 @@ class MatchmakingService implements IMatchService {
         try {
             const { matchId, ownerUserId, challengerUserId } = matchRequestNegotions;
 
-            await this.store.lrem('match_requests', 1, matchId)
-            //await this.store.popList('match_requests', 1, matchId);
-            //await this.store.delHash(`match:${matchId}`);
-            await this.store.del(`match:${matchId}`)
+            await Store.client.lrem('match_requests', 1, matchId)
+            await Store.client.del(`match:${matchId}`)
 
             const existingMatch = await this.matchRepository.readById(matchId);
 
@@ -52,33 +46,27 @@ class MatchmakingService implements IMatchService {
         
                 const challenger = await UserMatches.create({ playerId: challengerUserId, matchId, isOwner: false });
                 await challenger.save();
-            }
+            };
         } catch (err) {
-            console.log('error creating match', err)
-        }
+            ServerLogger.error('[MatchmakingService] Error creating match');
+        };
     };
 
-    public async refreshMatch (data: { matchId: string; ownerUserId: string; challengerUserId: string }) {
-        try {
-            const { matchId, ownerUserId, challengerUserId } = data;
+    public async refreshMatch (matchId: string, ownerUserId: string, challengerUserId: string) {
+        const existingMatch = await this.matchRepository.readById(matchId);
 
-            const existingMatch = await this.matchRepository.readById(matchId);
-            console.log('existing', existingMatch, matchId)
+        if (existingMatch) {
+            const challenger = await UserMatches.findOne({ playerId: challengerUserId });
+            await UserMatches.remove(challenger);
+            const owner = await UserMatches.findOne({ playerId: ownerUserId });
+            await UserMatches.remove(owner);
+            
+            await this.messageRepository.removeAllByMatch(matchId)
+        } else {
+            AppLogger.error('[MatchmakingService] Error creating match');
 
-            if (existingMatch) {
-                //await this.matchRepository.cleanMatchById(matchId, challengerUserId);
-                const challenger = await UserMatches.findOne({ playerId: challengerUserId });
-                await UserMatches.remove(challenger);
-                const owner = await UserMatches.findOne({ playerId: ownerUserId });
-                await UserMatches.remove(owner);
-                
-                await this.messageRepository.removeAllByMatch(matchId)
-            } else {
-                console.log('error refreshing match: could not find match')
-            }
-        } catch (err) {
-            console.log('error refreshing match', err)
-        }
+            throw new Error('Error refreshing match. Could not find match');
+        };
     };
 
     public createNewMatchRequest (matchRequest: MatchRequest) {
@@ -96,12 +84,11 @@ class MatchmakingService implements IMatchService {
         const key = `match:${matchId}`;
         const ttl = 86400;
 
-        this.store.multi()
+        Store.client.multi()
             .lpush('match_requests', matchId)
             .expire('match_requests', ttl)
             .exec()
-        //this.store.pushList('match_requests', matchId);
-        this.store.multi()
+        Store.client.multi()
             .hmset(key, {
                 matchId, 
                 ownerUserId, 
@@ -114,40 +101,31 @@ class MatchmakingService implements IMatchService {
             })
             .expire(key, ttl)
             .exec()
-        /*this.store.setHash(key, {
-            matchId, 
-            ownerUserId, 
-            ownerUsername, 
-            ownerNetcode, 
-            playingAs, 
-            lookingToPlay, 
-            region, 
-            description
-        }, ttl);*/
     }
 
-    public async confirmMatch (data) {
+    public async confirmMatch (data: ConfirmMatch) {
         const { matchId, ownerId } = data;
 
-        console.log('confiming match')
         const match = await this.matchRepository.readById(matchId);
 
-        //TODO: handle
         if (!match) {
-            console.log('NO MATCH FOUND')
-            return;
+            AppLogger.error('No matchfound to confirm');
+
+            throw new Error('Could not find match for confirmation');
         };
 
-        //TODO: temp
-        const owner = match.playerConnection.filter(val => val.playerId === ownerId);
+        const owner = match.playerConnection.filter(val => val.playerId === ownerId)[0];
 
-        if (!owner[0].isOwner) {
-            console.log("NOT MATCH OWNER")
-            return;
-        } else {
-            await this.matchRepository.updateMatchById(matchId, { isConfirmed: true });
+        if (!owner.isOwner) {
+            AppLogger.error('Only match owner can confirm match');
+
+            throw new Error('Only match owner can confirm match');
         };
-    }
+
+        await this.matchRepository.updateMatchById(matchId, { isConfirmed: true });
+    };
 };
 
-export { MatchmakingService };
+const MatchmakingServiceInstance = new MatchmakingService();
+
+export { MatchmakingService, MatchmakingServiceInstance };

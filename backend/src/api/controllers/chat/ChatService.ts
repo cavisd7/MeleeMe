@@ -5,25 +5,20 @@ import MatchRepository from '../../../domain/repository/matchmaking/MatchReposit
 
 import { Message } from '../../../domain/types/message';
 import { Result } from '../../../infra/utils/Result';
-import { User } from '../../../domain/entity/User';
 import { UserMatch } from '../../../domain/types/match';
+import { AppLogger, ServerLogger } from '../../../infra/utils/logging';
 
 interface IChatService {
     createNewMessage (message: Message): Promise<void>;
-    findMatches (matchIds: string[]): Promise<Result<UserMatch[]>>
-}
+    findMatches (matchIds: string[]): Promise<Result<UserMatch[]>>;
+    getMatchMessages (matchId: string): Promise<Result<Message[]>>;
+};
 
 //TODO: rename
 class ChatService implements IChatService {
-    //private messageRepository: MessageRepository;
-    //private matchRepository: MatchRepository;
-
-    constructor () {
-        //this.messageRepository = getConnection().getCustomRepository(MessageRepository);
-        //this.matchRepository = getConnection().getCustomRepository(MatchRepository);
-    };
+    constructor () {};
     
-    public async createNewMessage (message: Message) {
+    public async createNewMessage (message: Message): Promise<void> {
         try {
             const messageRepository = getConnection().getCustomRepository(MessageRepository);
             const matchRepository = getConnection().getCustomRepository(MatchRepository);
@@ -32,17 +27,19 @@ class ChatService implements IChatService {
 
             const match = await matchRepository.readById(matchId);
 
-            //TODO: handle
             if (!match) {
-                console.log('NO MATCH FOUND')
-                return;
+                AppLogger.error('[ChatService] Can\'t create message. No match found');
+                
+                throw new Error('No match found');
             };
 
             //TODO: types
             await messageRepository.save(message);
         } catch (err) {
-            console.log('error saving message', err)
-        }
+            ServerLogger.error('[ChatService] Error saving message');
+
+            return Promise.reject();
+        };
     };
 
     public async findMatches (matchIds: string[]): Promise<Result<UserMatch[]>> {
@@ -69,8 +66,10 @@ class ChatService implements IChatService {
 
             return Result.success<UserMatch[]>(payload);
         } catch (err) {
+            ServerLogger.error('[ChatService] Error finding matches');
+
             return Result.fail<any>(new Error('Could not read matches'));//TODO: type error
-        }
+        };
     };
 
     public async getMatchMessages (matchId: string): Promise<Result<Message[]>> {
@@ -88,14 +87,16 @@ class ChatService implements IChatService {
                     sender: message.sender,
                     text: message.text,
                     dateSent: message.dateSent
-                }
-            })
+                };
+            });
     
             return Result.success<Message[]>(payload);
         } catch (err) {
+            ServerLogger.error('[ChatService] Error getting match messages');
+
             return Result.fail<any>(new Error('Could not read messages'));//TODO: type error
-        }
-    }
+        };
+    };
 };
 
 export { ChatService };

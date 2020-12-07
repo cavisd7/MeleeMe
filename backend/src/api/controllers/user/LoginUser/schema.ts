@@ -7,7 +7,7 @@ const loginUserSchema = {
     username: {
         presence: true,
         length: {
-            minimum: 2, //TODO: change back to 5
+            minimum: 5,
             maximum: 32, 
             message: "username must be between 5-32 characters long"
         },
@@ -20,7 +20,7 @@ const loginUserSchema = {
     password: {
         presence: true,
         length: {
-            minimum: 4, //TODO: change back to 8
+            minimum: 8,
             message: "password must be at least 8 characters long"
         },
     }

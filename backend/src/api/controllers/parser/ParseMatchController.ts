@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { ServerLogger } from '../../../infra/utils/logging';
 import { BaseController } from "../BaseController";
 import { ParseMatchControllerLogic } from './ParseMatchControllerLogic';
 
@@ -10,7 +11,7 @@ class ParseMatchController extends BaseController {
         super();
 
         this.Controllerlogic = ControllerLogic;
-    }
+    };
 
     public async executeImpl (req: express.Request, res: express.Response): Promise<void> {
         try {
@@ -26,7 +27,8 @@ class ParseMatchController extends BaseController {
 
             return this.ok<any>(res, result.value);
         } catch (err) {
-            console.log('error in controller', err)
+            ServerLogger.error('[ParseMatchController] Error in controller');
+
             return this.fail(res, err.toString());
         };
     };

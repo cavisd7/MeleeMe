@@ -1,8 +1,8 @@
 import express from 'express';
 
+import { ServerLogger } from '../../../../infra/utils/logging';
 import { BaseController } from "../../BaseController";
 import { GetMatchMessagesControllerLogic } from './GetMatchMessagesControllerLogic';
-import { MatchMessagesBody } from './schema';
 
 class GetMatchMessagesController extends BaseController {
     private Controllerlogic: GetMatchMessagesControllerLogic;
@@ -26,7 +26,8 @@ class GetMatchMessagesController extends BaseController {
 
             return this.ok<any>(res, result.value);
         } catch (err) {
-            console.log('error in controller', err)
+            ServerLogger.error('[GetMatchMessagesController] Error in controller');
+
             return this.fail(res, err.toString());
         };
     };
