@@ -6,6 +6,7 @@ import { AppLogger } from '../utils/logging/index';
 import { Store, PubSub } from '../store';
 import { subscribeToChannels } from './events';
 import { bundleMessage, parseMessage, verifySession } from '../utils/socketUtils';
+import { Subscriber } from './subscribers';
 
 /* Socket request and response types */
 import { 
@@ -21,7 +22,14 @@ import {
 import MatchmakingHandler from './handlers/MatchmakingHandler';
 import ChatHandler from './handlers/ChatHandler';
 
-export class SocketServer {
+export interface ISocketServer {
+    wss: ws.Server;
+    send(socketId: string, type: ServerResponseType, payload: any): void;
+    sendToAllClients(type: ServerResponseType, payload: any): void;
+    getClient(socketId: string): Client;
+};
+
+export class SocketServer implements ISocketServer {
     public wss: ws.Server;
 
     private clients: Map<string, Client>;
@@ -31,11 +39,17 @@ export class SocketServer {
     private matchmaking;
     private chat;
 
+    private Subscriber: Subscriber;
+
     constructor() {
         this.clients = new Map<string, Client>();
 
+        /* Socket message handlers */
         this.matchmaking = new MatchmakingHandler();
         this.chat = new ChatHandler();
+
+        /* Redis message handlers */
+        this.Subscriber = new Subscriber();
         
         this.wss = new ws.Server({ noServer: true });
         this.wss.on('connection', (socket, req, session) => this.onConnection(socket, req, session));
@@ -44,6 +58,7 @@ export class SocketServer {
         
         this.wss.addListener('channel:subscribe', (channels: string[], socket?) => this.onChannelSubscribe(channels, socket));
 
+        PubSub.registerCallback(this.handleRedisMessage.bind(this));
         /* TODO: Fix names */
         this.wss.emit('channel:subscribe', ['SERVER', 'MATCHES', 'GROUP']);
         
@@ -107,22 +122,51 @@ export class SocketServer {
 
             /* Make sure session is still valid */
             await verifySession(req);
-
-            /* e.g. matchmaking:create-match-request */
+            
+            /* e.g. matchmaking:CreateMatchRequest */
             const [domain, action] = type.split(':');
             const handler = this[domain] as SocketHandler;
-
+            
             if (!handler) {
-                socket.emit('error', new Error('Unknown action'));
+                ServerLogger.error('[handleSocketMessage] No handler found for action');
+                
+                return socket.emit('error', new Error('Unknown action'));
             };
-
+            
             /*if (handler.preHandle) {
                 await handler.preHandle();
             };*/
-
+            
             await handler.exec(action, channel, { type, payload });
         } catch (err) {
+            ServerLogger.error(`[handleSocketMessage] ${err}`);
+
             socket.emit('error', new Error('Could not handle socket message'));
+        };
+    };
+
+    /*private binder<T>(fn, payload: T): () => Promise<void> {
+        return fn.bind(this, payload);
+    }*/
+
+    private async handleRedisMessage(channel: string, message: string): Promise<void> {
+        const parsedData = parseMessage(message);
+        const { type, payload } = parsedData;
+
+        try {
+            const [domain, action] = type.split(':');
+            const handler = this.Subscriber[domain][action];
+
+            if (!handler) {
+                ServerLogger.error('[handleRedisMessage] No handler found for action');
+
+                //return socket.emit('error', new Error('Unknown action'));
+                return;
+            };
+
+            await handler(this, parsedData);
+        } catch (err) {
+            ServerLogger.error(`[handleRedisMessage] Error: ${err}`);
         };
     };
 
@@ -138,7 +182,13 @@ export class SocketServer {
         this.send(socketId, ServerResponse.ERROR, { message: err.message });
     };
 
-    private send(socketId: string, type: ServerResponseType, payload: any): void {
+    public sendToAllClients(type: ServerResponseType, payload: any): void {
+        for (const keys of this.clients.keys()) {
+            this.send(keys, type, payload);
+        };
+    };
+    
+    public send(socketId: string, type: ServerResponseType, payload: any): void {
         const client = this.getClient(socketId);
         
         if (!client) {
@@ -182,7 +232,7 @@ export class SocketServer {
         this.clients.delete(socketId);
     };
 
-    private getClient(socketId: string): Client {
+    public getClient(socketId: string): Client {
         return this.clients.get(socketId);
     };
 };

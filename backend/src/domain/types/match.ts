@@ -8,7 +8,7 @@ export interface MatchRequest {
     playingAs: string; 
     lookingToPlay: string; 
     region: string; 
-    description: string;
+    description?: string;
 };
 
 export interface NegotiateMatchRequest extends MatchRequest {

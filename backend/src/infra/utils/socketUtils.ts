@@ -1,5 +1,6 @@
 import { Store } from '../store';
 import { ISocketMessage } from '../sockets/types';
+import { ServerLogger } from './logging';
 
 export const bundleMessage = (type: string, payload: any): string => {
     return JSON.stringify({ type, payload });
@@ -21,7 +22,7 @@ export const verifySession = async (req): Promise<string> => {
     /* TODO: Check cookie time */
     const { sessionID } = req;
 
-    const session = await Store.client.get(`sesss:${sessionID}`);
+    const session = await Store.client.get(`sess:${sessionID}`);
 
     if (!session) {
         throw new Error('No session found');

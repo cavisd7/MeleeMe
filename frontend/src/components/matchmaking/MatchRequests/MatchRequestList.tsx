@@ -39,7 +39,7 @@ const MatchRequestList: React.FC<Props> = props => {
     }
 
     React.useEffect(() => {
-        const matchedResults = requests.filter(request => {
+        const matchedResults = props.requests.filter(request => {
             if (
                 (filter.lookingToPlay === request.playingAs || request.playingAs === 'Any') 
                 && (filter.playingAs === request.lookingToPlay || filter.playingAs === 'Any') 
@@ -49,7 +49,7 @@ const MatchRequestList: React.FC<Props> = props => {
             }
         });
 
-        setVisibleRequests(matchedResults);
+        setVisibleRequests(props.requests);
     }, [props.requests, props.filter])
 
     return (

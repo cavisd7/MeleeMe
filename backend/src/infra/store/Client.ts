@@ -51,6 +51,7 @@ export class Client implements IClient {
             .exec();
     };
 
+    //TODO: possible bug where match_requests keys are not expiring whereas the requests at those keys are
     public async pushList(key: string, value: string, ttl?: number): Promise<any>  {
         return await this.client.multi()
             .lpush(key, value)

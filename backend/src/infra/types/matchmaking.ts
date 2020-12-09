@@ -3,7 +3,7 @@ export interface ConfirmMatch {
     ownerId: string;
 };
 
-export interface CreateMatchRequest {
+export interface MatchRequest {
     matchId: string;
     ownerUserId: string; 
     ownerUsername: string;
@@ -15,17 +15,10 @@ export interface CreateMatchRequest {
     avatar?: string;
 };
 
-export interface DenyMatch {
-    matchId: string;
-    ownerUserId: string;
-    ownerUsername: string;
-    ownerNetcode: string;
-    avatar?: string;
-    playingAs: string;
-    lookingToPlay: string;
-    region: string;
-    description?: string;
+export interface NegotiateMatchRequest extends MatchRequest {
     challengerUserId: string;
     challengerNetcode: string;
     challengerUsername: string; 
 };
+
+export type MatchRequestId = { matchId: string };

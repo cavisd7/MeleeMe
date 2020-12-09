@@ -2,13 +2,13 @@ import { Store, PubSub } from '../../store';
 import { MatchmakingServiceInstance } from '../../../api/controllers/matchmaking/MatchmakingService';
 
 import { SocketMessage, Channel, Payload, SocketHandler } from '../types';
-import { ConfirmMatch, CreateMatchRequest, DenyMatch } from '../../types/matchmaking';
+import { ConfirmMatch, MatchRequest, NegotiateMatchRequest } from '../../types/matchmaking';
 
 export default class MatchmakingHandler implements SocketHandler {
     constructor() {};
 
     public async exec(action: string, channel: string, payload: any): Promise<void> {
-        switch(action) {
+        switch(payload.type) {
             case SocketMessage.CREATE_MATCH_REQUEST:
                 return await this.CreateMatchRequest(channel, payload);
             case SocketMessage.CONFIRM_MATCH:
@@ -16,11 +16,11 @@ export default class MatchmakingHandler implements SocketHandler {
             case SocketMessage.DENY_MATCH:
                 return await this.DenyMatch(channel, payload);
             default:
-                throw new Error('Unrecognized action in MatchmakingHandler');
+                throw new Error(`[MatchmakingHandler] Unrecognized action ${action}`);
         };
     };
 
-    private async CreateMatchRequest(channel: string, payload: Payload<CreateMatchRequest>): Promise<void> {
+    private async CreateMatchRequest(channel: string, payload: Payload<MatchRequest>): Promise<void> {
         const ttl = 86400;
         const key = `match:${payload.payload.matchId}`;
 
@@ -37,7 +37,7 @@ export default class MatchmakingHandler implements SocketHandler {
         await PubSub.publishToChannel(channel, JSON.stringify(payload));
     };
 
-    private async DenyMatch(channel: string, payload: Payload<DenyMatch>): Promise<void> {
+    private async DenyMatch(channel: string, payload: Payload<NegotiateMatchRequest>): Promise<void> {
         await PubSub.publishToChannel(channel, JSON.stringify(payload));
 
         await MatchmakingServiceInstance.refreshMatch(

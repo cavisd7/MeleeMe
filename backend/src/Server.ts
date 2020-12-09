@@ -1,10 +1,7 @@
 import http from 'http';
-import cookie from 'cookie';
-import stream from 'stream';
 
 import config from './infra/config';
 import { ServerLogger, AppLogger } from './infra/utils/logging';
-import { SocketManager } from './infra/socket/SocketManager';
 import { SocketServer } from './infra/sockets/SocketServer';
 
 interface IServer {
@@ -16,7 +13,6 @@ export class Server implements IServer {
     static readonly PORT = config.serverPort;
 
     private httpServer: http.Server;
-    //private SocketManager: SocketManager;
     private SocketServer: SocketServer;
     private logConnectionsInterval;
 
@@ -28,7 +24,6 @@ export class Server implements IServer {
         this.httpServer.on('upgrade', (req, socket, head) => this.onUpgrade(req, socket, head, authenticateSession));
         
         this.SocketServer = new SocketServer();
-        //this.SocketManager = new SocketManager();
     };
 
     public start() {
@@ -96,6 +91,7 @@ export class Server implements IServer {
     };
 
     private onUpgrade(req: http.IncomingMessage, socket/*: stream.Duplex*/, head: Buffer, authenticateSession) {
+        //TODO: Not authenticating properly 
         authenticateSession(req as any, {} as any, () => {
             if ((req as any).session.id) {
                 AppLogger.info('User session authenticated');

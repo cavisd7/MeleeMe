@@ -16,8 +16,6 @@ interface IChatService {
 
 //TODO: rename
 class ChatService implements IChatService {
-    constructor () {};
-    
     public async createNewMessage (message: Message): Promise<void> {
         try {
             const messageRepository = getConnection().getCustomRepository(MessageRepository);
@@ -99,4 +97,6 @@ class ChatService implements IChatService {
     };
 };
 
-export { ChatService };
+const ChatServiceInstance = new ChatService();
+
+export { ChatService, ChatServiceInstance };

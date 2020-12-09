@@ -12,21 +12,19 @@ import {
     INITIATE_MATCH_NEGOTIATIONS,
     RECEIVED_MATCH_NEGOTIATIONS,
     MATCH_REQUEST_ACK,
-    REMOVE_MATCH,
+    REMOVE_MATCH_REQUEST,
     receivedMatchNegotiations,
     removeMatchById,
     CONFIRM_MATCH,
     DENY_MATCH, 
     MATCH_CONFIRMED,
     MATCH_DENIED,
-    MATCH_DENIED_COMPLETE,
-    MATCH_CONFIRMED_COMPLETE,
     resetNegotiating,
 } from '../matchmaking/matchmaking.actions';
 import { connectSocket, disconnectSocket, ERROR } from '../socket/socket.actions';
 import { 
     sendMessage, 
-    CLIENT_CHAT_MESSAGE, 
+    SEND_CHAT_MESSAGE, 
     newConversation, 
     NEW_CHAT_MESSAGE, 
     receivedMessage 
@@ -124,7 +122,7 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
                 }));
                 dispatch(newConversation({ matchId: payload.matchId }));
                 break;
-            case REMOVE_MATCH:
+            case REMOVE_MATCH_REQUEST:
                 dispatch(removeMatchById(payload));
                 break;
 
@@ -142,19 +140,6 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
                 dispatch(removeMatch(payload));
                 dispatch(resetNegotiating());
                 break;
-            /*case MATCH_DENIED_COMPLETE: 
-                //for owner
-                //set negotiation to null
-                //restore request
-                //remove match from matches
-                dispatch(matchDeniedComplete(payload))
-                break*/
-            /*case MATCH_CONFIRMED_COMPLETE:
-                //for owner
-                //set negotiation to null
-                //clear request by id
-                dispatch(matchConfirmed(payload));
-                break;*/
             case ERROR:
                 console.log('socket error from server', payload)
                 break;
@@ -168,8 +153,8 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
         let channel: string;
 
         switch (actionType) {
-            case CLIENT_CHAT_MESSAGE:
-                messageType = CLIENT_CHAT_MESSAGE;
+            case SEND_CHAT_MESSAGE:
+                messageType = SEND_CHAT_MESSAGE;
                 //channel = actionPayload.matchId;
                 channel = 'GROUP';
                 break;
