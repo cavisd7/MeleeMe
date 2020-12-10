@@ -6,8 +6,9 @@ import { IRegisterUserBody } from '../RegisterUser/schema';
 import { UserAuthDTO } from '../UserAuthDTO';
 
 import { createToken } from '../../../../infra/utils/token';
+import { ServerLogger } from '../../../../infra/utils/logging';
 
-export default class LoginUserController extends BaseController {
+export default class RegisterUserController extends BaseController {
     private ControllerLogic: RegisterUserControllerLogic;
 
     constructor(ControllerLogic: RegisterUserControllerLogic) {
@@ -29,6 +30,8 @@ export default class LoginUserController extends BaseController {
 
             return this.ok<any>(res, { user: result.value, token: authorizationToken });
         } catch (err) {
+            ServerLogger.error('[LoginUserController] Error in controller');
+            
             this.fail(res, new Error('failed in controller'));
         };
     };

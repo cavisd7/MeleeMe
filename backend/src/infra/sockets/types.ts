@@ -84,6 +84,6 @@ export interface Payload<T> {
 };
 
 export interface SocketHandler {
-    exec: (action: string, channel: string, payload: any) => Promise<void>;
+    exec: (action: string, channel: string, payload: any, userId?: string) => Promise<void>;
     preHandle?: () => void;
 };

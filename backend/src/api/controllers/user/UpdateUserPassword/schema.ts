@@ -1,7 +1,7 @@
 interface IUpdateUserPasswordBody {
     newPassword: string;
     passwordConfirmation: string;
-}
+};
 
 const updateUserPasswordSchema = {
     newPassword: {

@@ -58,7 +58,7 @@ class Matchmaking extends React.Component<CombinedProps, {}> {
 
         createMatchRequestDispatch(request);
 
-        history.push('/')
+        history.goBack();
     };
 
     render() {

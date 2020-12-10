@@ -1,9 +1,4 @@
-
-interface IClientError {
-    message: string;
-}
-
-abstract class ClientError implements IClientError {
+abstract class ClientError {
     public readonly message: string;
 
     constructor (message: string) {

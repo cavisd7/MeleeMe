@@ -1,14 +1,13 @@
 import { getConnection } from 'typeorm';
 
-import { AppLogger, ServerLogger } from '../../../infra/utils/logging';
+import { AppLogger } from '../../../infra/utils/logging';
 import { Store } from '../../../infra/store';
 
 import MatchRepository from '../../../domain/repository/matchmaking/MatchRepository';
 import MessageRepository from '../../../domain/repository/message/MessageRepository';
 import { UserMatches } from '../../../domain/entity/UserMatches';
 
-import { ConfirmMatch } from '../../../infra/types/matchmaking';
-import { NegotiateMatchRequest } from '../../../domain/types/match';
+import { NegotiateMatchRequest, ConfirmMatch } from '../../../types/matchmaking';
 
 interface IMatchService {
     createNewMatch (matchRequestNegotions: NegotiateMatchRequest): Promise<void>;
@@ -64,7 +63,7 @@ class MatchmakingService implements IMatchService {
     public async confirmMatch (data: ConfirmMatch): Promise<void> {
         const matchRepository = getConnection().getCustomRepository(MatchRepository);
 
-        const { matchId, ownerId } = data;
+        const { matchId, ownerUserId } = data;
 
         const match = await matchRepository.readById(matchId);
 
@@ -74,7 +73,7 @@ class MatchmakingService implements IMatchService {
             throw new Error('Could not find match for confirmation');
         };
 
-        const owner = match.playerConnection.filter(val => val.playerId === ownerId)[0];
+        const owner = match.playerConnection.filter(val => val.playerId === ownerUserId)[0];
 
         if (!owner.isOwner) {
             AppLogger.error('Only match owner can confirm match');

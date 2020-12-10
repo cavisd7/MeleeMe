@@ -20,7 +20,7 @@ import {
 
 /* Services */
 import MatchmakingHandler from './handlers/MatchmakingHandler';
-import ChatHandler from './handlers/ChatHandler';
+import RoomHandler from './handlers/RoomHandler';
 
 export interface ISocketServer {
     wss: ws.Server;
@@ -37,7 +37,7 @@ export class SocketServer implements ISocketServer {
 
     /* Action handlers */
     private matchmaking;
-    private chat;
+    private room;
 
     private Subscriber: Subscriber;
 
@@ -46,7 +46,7 @@ export class SocketServer implements ISocketServer {
 
         /* Socket message handlers */
         this.matchmaking = new MatchmakingHandler();
-        this.chat = new ChatHandler();
+        this.room = new RoomHandler();
 
         /* Redis message handlers */
         this.Subscriber = new Subscriber();
@@ -60,7 +60,7 @@ export class SocketServer implements ISocketServer {
 
         PubSub.registerCallback(this.handleRedisMessage.bind(this));
         /* TODO: Fix names */
-        this.wss.emit('channel:subscribe', ['SERVER', 'MATCHES', 'GROUP']);
+        this.wss.emit('channel:subscribe', ['SOCKET']);
         
         this.startHeartbeat();
     };
@@ -122,13 +122,18 @@ export class SocketServer implements ISocketServer {
 
             /* Make sure session is still valid */
             await verifySession(req);
+
+            const client = this.getClient(socketId);
+            if (!client) {
+                throw new Error('No client on server');
+            };
             
             /* e.g. matchmaking:CreateMatchRequest */
             const [domain, action] = type.split(':');
             const handler = this[domain] as SocketHandler;
             
             if (!handler) {
-                ServerLogger.error('[handleSocketMessage] No handler found for action');
+                ServerLogger.error(`[handleSocketMessage] No handler found for action ${type}`);
                 
                 return socket.emit('error', new Error('Unknown action'));
             };
@@ -137,7 +142,7 @@ export class SocketServer implements ISocketServer {
                 await handler.preHandle();
             };*/
             
-            await handler.exec(action, channel, { type, payload });
+            await handler.exec(action, channel, { type, payload }, client.session.user.userId);
         } catch (err) {
             ServerLogger.error(`[handleSocketMessage] ${err}`);
 
@@ -155,16 +160,16 @@ export class SocketServer implements ISocketServer {
 
         try {
             const [domain, action] = type.split(':');
-            const handler = this.Subscriber[domain][action];
+            const handler = () => this.Subscriber[domain][action](this, parsedData);
 
             if (!handler) {
-                ServerLogger.error('[handleRedisMessage] No handler found for action');
+                ServerLogger.error(`[handleRedisMessage] No handler found for action ${type}`);
 
                 //return socket.emit('error', new Error('Unknown action'));
                 return;
             };
 
-            await handler(this, parsedData);
+            await handler();
         } catch (err) {
             ServerLogger.error(`[handleRedisMessage] Error: ${err}`);
         };

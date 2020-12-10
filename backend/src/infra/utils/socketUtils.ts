@@ -1,6 +1,5 @@
 import { Store } from '../store';
 import { ISocketMessage } from '../sockets/types';
-import { ServerLogger } from './logging';
 
 export const bundleMessage = (type: string, payload: any): string => {
     return JSON.stringify({ type, payload });

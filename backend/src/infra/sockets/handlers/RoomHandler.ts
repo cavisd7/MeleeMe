@@ -1,11 +1,11 @@
 import { SocketHandler, SocketMessage, Payload, Channel, ServerResponse } from '../types';
-import { Message } from '../../types/chat';
+import { Message } from '../../../types/chat';
 import { ChatServiceInstance } from '../../../api/controllers/chat/ChatService';
 import { PubSub } from '../../store';
 
-export default class ChatHandler implements SocketHandler {
+export default class RoomHandler implements SocketHandler {
     public async exec(action: string, channel: string, payload: any): Promise<void> {
-        switch(action) {
+        switch(payload.type) {
             case SocketMessage.SEND_CHAT_MESSAGE:
                 return await this.SendChatMessage(channel, payload);
             default:

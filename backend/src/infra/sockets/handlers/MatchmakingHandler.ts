@@ -2,19 +2,25 @@ import { Store, PubSub } from '../../store';
 import { MatchmakingServiceInstance } from '../../../api/controllers/matchmaking/MatchmakingService';
 
 import { SocketMessage, Channel, Payload, SocketHandler } from '../types';
-import { ConfirmMatch, MatchRequest, NegotiateMatchRequest } from '../../types/matchmaking';
+import { ConfirmMatch, MatchRequest, NegotiateMatchRequest } from '../../../types/matchmaking';
 
 export default class MatchmakingHandler implements SocketHandler {
     constructor() {};
 
-    public async exec(action: string, channel: string, payload: any): Promise<void> {
+    public async exec(action: string, channel: string, payload: any, userId: string): Promise<void> {
         switch(payload.type) {
             case SocketMessage.CREATE_MATCH_REQUEST:
-                return await this.CreateMatchRequest(channel, payload);
+                return await this.CreateMatchRequest(Channel.SOCKET, payload);
             case SocketMessage.CONFIRM_MATCH:
-                return await this.ConfirmMatch(channel, payload);
+                return await this.ConfirmMatch(Channel.SOCKET, payload, userId);
             case SocketMessage.DENY_MATCH:
-                return await this.DenyMatch(channel, payload);
+                return await this.DenyMatch(Channel.SOCKET, payload);
+            case SocketMessage.INITIATE_MATCH_NEGOTIATIONS:
+                await PubSub.publishToChannel(Channel.SOCKET, JSON.stringify(payload));
+                break;
+            case SocketMessage.SEND_CHAT_MESSAGE:
+                await PubSub.publishToChannel(Channel.SOCKET, JSON.stringify(payload));
+                break;
             default:
                 throw new Error(`[MatchmakingHandler] Unrecognized action ${action}`);
         };
@@ -30,9 +36,10 @@ export default class MatchmakingHandler implements SocketHandler {
         await PubSub.publishToChannel(channel, JSON.stringify(payload));
     };
 
-    private async ConfirmMatch(channel: string, payload: Payload<ConfirmMatch>): Promise<void> {
+    //TODO
+    private async ConfirmMatch(channel: string, payload: Payload<ConfirmMatch>, userId: string): Promise<void> {
         //TODO: rename payload
-        await MatchmakingServiceInstance.confirmMatch(payload.payload);
+        await MatchmakingServiceInstance.confirmMatch({ matchId: payload.payload.matchId, ownerUserId: userId });
 
         await PubSub.publishToChannel(channel, JSON.stringify(payload));
     };

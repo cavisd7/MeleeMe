@@ -3,6 +3,7 @@ import express from 'express';
 import { BaseController } from "../../BaseController";
 import { UpdateUserPasswordControllerLogic } from './UpdateUserPasswordControllerLogic'
 import { IUpdateUserPasswordBody } from './schema';
+import { ServerLogger } from '../../../../infra/utils/logging';
 
 class UpdateUserPasswordController extends BaseController {
     private Controllerlogic: UpdateUserPasswordControllerLogic;
@@ -23,6 +24,8 @@ class UpdateUserPasswordController extends BaseController {
 
             return this.ok<any>(res, result.value);
         } catch (err) {
+            ServerLogger.error('[UpdateUserPasswordController] Error in controller');
+
             this.fail(res, new Error('failed in controller'));
         };
     };

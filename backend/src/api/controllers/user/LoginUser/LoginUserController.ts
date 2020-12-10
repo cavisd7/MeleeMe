@@ -29,7 +29,7 @@ class LoginUserController extends BaseController {
 
             /* Set session */
             const { userId, username, email, netcode, matchIds, dateJoined } = result.value as UserAuthDTO;
-            (req.session as any).user = { userId, username, email, netcode, matchIds, dateJoined };
+            req.session.user = { userId, username, email, netcode, matchIds, dateJoined };
 
             const authorizationToken = createToken({ foo: 'hi' });
 

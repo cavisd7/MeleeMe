@@ -1,4 +1,5 @@
 import express from 'express';
+import { ServerLogger } from '../../../../infra/utils/logging';
 
 import { BaseController } from "../../BaseController";
 import { UpdateAvatarControllerLogic } from './UpdateAvatarControllerLogic'
@@ -14,7 +15,7 @@ class UpdateAvatarController extends BaseController {
 
     public async executeImpl (req: express.Request, res: express.Response): Promise<void> {
         try {
-            const result = await this.Controllerlogic.execute((req as any).profilePicture, (req.session as any).user.userId);
+            const result = await this.Controllerlogic.execute((req as any).profilePicture, req.session.user.userId);
 
             if (result.isLeft) { 
                 return this.errorResponse(res, result.value);
@@ -29,6 +30,8 @@ class UpdateAvatarController extends BaseController {
 
             return this.ok<any>(res, result.value);
         } catch (err) {
+            ServerLogger.error('[UpdateAvatarController] Error in controller');
+
             this.fail(res, new Error('failed in controller'));
         };
     };

@@ -3,9 +3,9 @@ import { getConnection } from 'typeorm';
 import MessageRepository from '../../../domain/repository/message/MessageRepository';
 import MatchRepository from '../../../domain/repository/matchmaking/MatchRepository';
 
-import { Message } from '../../../domain/types/message';
+import { Message } from '../../../types/chat';
 import { Result } from '../../../infra/utils/Result';
-import { UserMatch } from '../../../domain/types/match';
+import { UserMatch } from '../../../types/user';
 import { AppLogger, ServerLogger } from '../../../infra/utils/logging';
 
 interface IChatService {

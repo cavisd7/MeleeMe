@@ -1,22 +1,20 @@
 import { getConnection } from 'typeorm';
 import bcrypt from 'bcrypt';
 
-import { UserDoesNotExist } from '../../errors/ClientError/AuthenticationError/UserDoesNotExist';
-import { InvalidPassword } from '../../errors/ClientError/AuthenticationError/InvalidPassword';
-import { IUserRepository } from '../../../domain/repository/user/UserRepository';
+import { UserDoesNotExist } from '../../../infra/errors/api/ClientError/AuthenticationError/UserDoesNotExist';
 import { User } from '../../../domain/entity/User';
 import UserRepository from '../../../domain/repository/user/UserRepository';
 import { Result } from '../../../infra/utils/Result';
 import { IRegisterUserBody } from './RegisterUser/schema';
-import { PersistenceError } from '../../errors/DatabaseError/PersistenceError';
-import { GenericDatabaseError } from '../../errors/DatabaseError/GenericDatabaseError';
-import { DeletionError } from '../../errors/DatabaseError/DeletionError';
-import { UpdateError } from '../../errors/DatabaseError/UpdateError';
-import { HashPasswordError } from '../../errors/ServerError/HashPasswordError';
+import { PersistenceError } from '../../../infra/errors/api/DatabaseError/PersistenceError';
+import { GenericDatabaseError } from '../../../infra/errors/api/DatabaseError/GenericDatabaseError';
+import { DeletionError } from '../../../infra/errors/api/DatabaseError/DeletionError';
+import { UpdateError } from '../../../infra/errors/api/DatabaseError/UpdateError';
+import { ServerLogger } from '../../../infra/utils/logging';
 
 interface IUserService {
     verifyPassword (clearPassword: string, hashedPassword: string): Promise<boolean>;
-    hashPassword (password: string): Promise<Result<string>>;
+    hashPassword (password: string): Promise<string>;
     findUserByUsername (username: string): Promise<Result<User>>;
     findUserByUserId (userId: string): Promise<Result<User>>;
     createUser (user: IRegisterUserBody): Promise<Result<User>>;
@@ -34,53 +32,33 @@ class UserService implements IUserService {
         this.userRepository = userRepository;
     };*/
 
-    // TODO: test
     public async verifyPassword (clearPassword: string, hashedPassword: string): Promise<boolean> {
         return bcrypt.compare(clearPassword, hashedPassword);
-        /*return new Promise<Result<boolean>>((resolve, reject) => {
-            bcrypt.compare(clearPassword, hashedPassword, (err, same) => {
-                if (err) {
-                    return reject(Result.fail<boolean>(new Error('Something went wrong while verifying password')));
-                };
-
-                if (same) {
-                    return resolve(Result.success<boolean>(true));
-                } else {
-                    return reject(Result.fail<boolean>(new InvalidPassword()));
-                };
-            });
-        });*/
     };
 
-    public hashPassword (password: string): Promise<Result<string>> {
-        return new Promise<Result<string>>((resolve, reject) => {
-            bcrypt.hash(password, 10, (err, encrypted) => {
-                if (err) return reject(Result.fail<string>(new HashPasswordError()));
-
-                return resolve(Result.success<string>(encrypted));
-            });
-        });
+    public hashPassword (password: string): Promise<string> {
+        return bcrypt.hash(password, 10);
     };
 
-    // TODO: test
     public async findUserByUsername (username: string): Promise<Result<User>> {
         try {
             const userRepository = getConnection().getCustomRepository(UserRepository);
-
             const userRecord = await userRepository.readUserByUsername(username);
 
             if (!userRecord) {
+                ServerLogger.debug(`${username} does not exist`);
+    
                 return Result.fail<User>(new UserDoesNotExist(`${username} does not exist`));
             };
-
+    
             return Result.success<User>(userRecord);
         } catch (err) {
-            //presumed database error?
+            ServerLogger.error(`[findUserByUsername] ${err}`);
+
             return Result.fail<User>(new GenericDatabaseError());
         };
     };
 
-    // TODO: test
     public async findUserByUserId (userId: string): Promise<Result<User>> {
         try {
             const userRepository = getConnection().getCustomRepository(UserRepository);
@@ -113,17 +91,15 @@ class UserService implements IUserService {
         };
     };
 
-    public async deleteUser (userId: string): Promise<Result<any>> {
+    public async deleteUser (userId: string): Promise<Result<void>> {
         try {
-            console.log('delete user', userId)
             const userRepository = getConnection().getCustomRepository(UserRepository);
 
             await userRepository.delete(userId);
     
-            return Result.success<any>();
+            return Result.success<void>();
         } catch (err) {
-            console.log('service error', err)
-            return Result.fail<any>(new DeletionError());
+            return Result.fail<void>(new DeletionError());
         };
     };
 

@@ -2,12 +2,11 @@ import { ControllerLogic } from '../../ControllerLogic';
 import { IRegisterUserBody } from '../RegisterUser/schema';
 import { IUserService } from '../UserService'
 import { UserAuthDTO } from '../UserAuthDTO';
-import { Result, Either, Left, Right, left, right } from '../../../../infra/utils/Result';
+import { Either, left, right } from '../../../../infra/utils/Result';
 import { toDTO } from '../UserMapper';
-import { UserAlreadyExists } from '../../../errors/ClientError/UserAlreadyExists';
-import { InvalidPassword } from '../../../errors/ClientError/AuthenticationError/InvalidPassword';
-import { DatabaseError } from '../../../errors/DatabaseError';
-import { HashPasswordError } from '../../../errors/ServerError/HashPasswordError';
+import { UserAlreadyExists } from '../../../../infra/errors/api/ClientError/UserAlreadyExists';
+import { DatabaseError } from '../../../../infra/errors/api/DatabaseError';
+import { HashPasswordError } from '../../../../infra/errors/api/ServerError/HashPasswordError';
 
 type Response = Either<UserAlreadyExists | DatabaseError, UserAuthDTO>;
 
@@ -25,9 +24,8 @@ class RegisterUserControllerLogic implements ControllerLogic<IRegisterUserBody, 
         if (doesUserExist.isSuccessful) return left<UserAlreadyExists>(new UserAlreadyExists('username is taken'));
 
         const hashPasswordOrError = await this.UserService.hashPassword(password);
-        if (!hashPasswordOrError.isSuccessful) return left<HashPasswordError>(hashPasswordOrError.getError());
 
-        const user = Object.assign(body, { password: hashPasswordOrError.getValue() })
+        const user = Object.assign(body, { password: hashPasswordOrError })
 
         const newUserOrError = await this.UserService.createUser({ ...user });
         if (!newUserOrError.isSuccessful) return left<DatabaseError>(newUserOrError.getError()); //TODO: narrow errors

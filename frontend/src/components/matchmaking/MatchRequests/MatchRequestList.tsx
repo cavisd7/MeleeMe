@@ -49,7 +49,7 @@ const MatchRequestList: React.FC<Props> = props => {
             }
         });
 
-        setVisibleRequests(props.requests);
+        setVisibleRequests(matchedResults);
     }, [props.requests, props.filter])
 
     return (

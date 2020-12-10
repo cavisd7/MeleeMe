@@ -3,7 +3,7 @@ import { ChatService } from '../ChatService';
 import { GetMatchMessagesBody } from './schema';
 
 import { Either, left, right } from '../../../../infra/utils/Result';
-import { Message } from '../../../../domain/types/message';
+import { Message } from '../../../../types/chat';
 
 type Response = Either<Error, Message[]>;
 

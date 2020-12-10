@@ -1,4 +1,3 @@
-/* /api/v1/users/login returns */
 export interface UserAuthDTO {
     userId: string;
     username: string;

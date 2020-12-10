@@ -11,8 +11,8 @@ import { APIErrorResponse } from 'api/types';
 /* From client to server */
 export const CREATE_MATCH_REQUEST = 'matchmaking:CreateMatchRequest';
 export const INITIATE_MATCH_NEGOTIATIONS = 'matchmaking:InitiateMatchNegotiations';
-export const CONFIRM_MATCH = 'room:ConfirmMatch';
-export const DENY_MATCH = 'room:DenyMatch';
+export const CONFIRM_MATCH = 'matchmaking:ConfirmMatch';
+export const DENY_MATCH = 'matchmaking:DenyMatch';
 
 /* From server to client */
 export const NEW_MATCH_REQUEST = 'NewMatchRequest';

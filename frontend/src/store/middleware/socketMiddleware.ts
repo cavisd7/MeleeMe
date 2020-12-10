@@ -5,7 +5,6 @@ import { Action as FsaAction } from 'typescript-fsa';
 import { SocketAction, _SocketAction, SocketMessageTypes } from '../types';
 
 import { 
-    createMatchRequest, 
     NEW_MATCH_REQUEST, 
     newMatchRequest, 
     CREATE_MATCH_REQUEST,
@@ -63,7 +62,7 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
         
         try {
             parsedData = JSON.parse(data);
-            console.log('incoming socket message')
+            console.log('incoming socket message', parsedData)
         } catch (e) {
             //TODO: send to socket reducer
             console.log('[SOCKET ERROR] Failed to parse incoming data!', e);
@@ -76,6 +75,7 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
                 dispatch(receivedMessage(payload));
                 break;
             case NEW_MATCH_REQUEST:
+                console.log('got NEW_MATCH_REQUEST');
                 dispatch(newMatchRequest(payload as MatchRequest));
                 break;
             case RECEIVED_MATCH_NEGOTIATIONS:
@@ -101,6 +101,7 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
                 dispatch(newConversation({matchId: payload.matchId }));
                 break;
             case MATCH_REQUEST_ACK:
+                console.log('got MATCH_REQUEST_ACK');
                 dispatch(receivedMatchNegotiations(payload as NegotiateMatchRequest));
                 dispatch(addMatch({
                     matchId: payload.matchId,

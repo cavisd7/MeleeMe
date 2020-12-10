@@ -1,16 +1,12 @@
-import { ClientError } from '../errors/ClientError/index';
-import { DatabaseError } from '../errors/DatabaseError';
+import { ClientError } from '../../infra/errors/api/ClientError/index';
+import { DatabaseError } from '../../infra/errors/api/DatabaseError';
 import { ServerLogger } from '../../infra/utils/logging';
-import { ServerError } from '../errors/ServerError';
-import { AuthenticationError } from '../errors/ClientError/AuthenticationError/index';
+import { ServerError } from '../../infra/errors/api/ServerError';
+import { AuthenticationError } from '../../infra/errors/api/ClientError/AuthenticationError/index';
 
 export abstract class BaseController {
-    constructor () {};
-
-    //feature's controller logic
     protected abstract executeImpl (req, res): Promise<void | any>;
 
-    //hook up to express router
     public async execute (req, res): Promise<void> {
         try {
             await this.executeImpl(req, res)

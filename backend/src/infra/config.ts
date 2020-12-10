@@ -77,7 +77,7 @@ export default {
     combinedLogPath: path.resolve(appDir, 'logs/combined.log'),
     errorLogPath: path.resolve(appDir, 'logs/error.log'),
     logs: {
-        level: process.env.LOG_LEVEL
+        level: process.env.NODE_ENV === 'production' ? 'info' : 'debug'
     },
     aws: {
         region: process.env.REGION,

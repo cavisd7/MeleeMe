@@ -78,7 +78,6 @@ const RequestItemRow: React.FC<CombinedProps> = (props) => {
     };
 
     const handleButtonClick = (e: React.MouseEvent<HTMLElement>) => {
-        console.log('key', NON_PRODUCTION_key)
         selectRequestForNegotiation(NON_PRODUCTION_key);//TODO: use more unique key
     };
 

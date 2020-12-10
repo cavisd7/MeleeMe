@@ -54,7 +54,7 @@ const matchmaking: Reducer<MatchmakingState> = (state: MatchmakingState = matchm
 
         return {
             ...state,
-            requests: [...state.requests, payload]
+            requests: [payload, ...state.requests]
         };
     };
 

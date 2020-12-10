@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import Validator from 'validate.js';
 
 import { AppLogger } from '../../infra/utils/logging';
-import { NoRequestBodyFound } from '../errors/ClientError/NoRequestBodyFound';
-import { ValidationError } from '../errors/ClientError/ValidationError';
+import { NoRequestBodyFound } from '../../infra/errors/api/ClientError/NoRequestBodyFound';
+import { ValidationError } from '../../infra/errors/api/ClientError/ValidationError';
 
 export const validate = (schema: any) => {
     return (req: Request, res: Response, next: NextFunction) => {

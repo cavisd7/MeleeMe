@@ -1,18 +1,7 @@
 import { ControllerLogic } from '../../ControllerLogic';
 import { Store } from '../../../../infra/store';
-
+import { MatchRequest } from '../../../../types/matchmaking';
 import { Either, left, right } from '../../../../infra/utils/Result';
-
-//TODO: move
-interface MatchRequest {
-    matchId: string, 
-    userId: string, 
-    username: string, 
-    netcode: string, 
-    playingAs: string,
-    lookingToPlay: string,
-    region: string
-};
 
 type Response = Either<Error, MatchRequest[]>;
 

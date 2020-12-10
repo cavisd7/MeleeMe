@@ -1,7 +1,7 @@
 import { ControllerLogic } from '../../ControllerLogic';
 import { Either, left, right } from '../../../../infra/utils/Result';
 import { ChatService } from '../../chat/ChatService';
-import { UserMatch } from '../../../../domain/types/match';
+import { UserMatch } from '../../../../types/user';
 import { ServerLogger } from '../../../../infra/utils/logging';
 
 //TODO: error type
@@ -16,14 +16,10 @@ class GetMatchesControllerLogic implements ControllerLogic<string[], Response> {
 
     /* GetMatches logic */
     public async execute (matchIds: string[]): Promise<Response> {
-        try {
-            const matchesOrError = await this.ChatService.findMatches(matchIds);
-            if (!matchesOrError.isSuccessful) return left<Error>(matchesOrError.getError());
+        const matchesOrError = await this.ChatService.findMatches(matchIds);
+        if (!matchesOrError.isSuccessful) return left<Error>(matchesOrError.getError());
 
-            return right<UserMatch[]>(matchesOrError.getValue());
-        } catch (err) {
-            ServerLogger.error('[GetMatchesControllerLogic] Error in controller');
-        };
+        return right<UserMatch[]>(matchesOrError.getValue());
     };
 };
 

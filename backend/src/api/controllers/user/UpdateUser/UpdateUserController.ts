@@ -4,6 +4,7 @@ import { BaseController } from "../../BaseController";
 import { UpdateUserControllerLogic } from './UpdateUserControllerLogic'
 import { IUpdateUserBody } from './schema';
 import { UserAuthDTO } from '../UserAuthDTO';
+import { ServerLogger } from '../../../../infra/utils/logging';
 
 class UpdateUserController extends BaseController {
     private Controllerlogic: UpdateUserControllerLogic;
@@ -24,13 +25,15 @@ class UpdateUserController extends BaseController {
 
             //TODO: fix session not updating
             const { userId, username, email, netcode, matchIds, dateJoined } = result.value as UserAuthDTO;
-            (req.session as any).user = { userId, username, email, netcode, matchIds, dateJoined };
+            req.session.user = { userId, username, email, netcode, matchIds, dateJoined };
             req.session.save(() => {
                 console.log('session saved manually')
             });
 
             return this.ok<any>(res, result.value);
         } catch (err) {
+            ServerLogger.error('[UpdateUserController] Error in controller');
+
             this.fail(res, new Error('failed in controller'));
         };
     };

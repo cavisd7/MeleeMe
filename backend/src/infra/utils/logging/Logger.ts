@@ -58,10 +58,10 @@ export class Logger implements ILogger {
 
         const myFormat = winston.format.printf(({ message, timestamp }) => {
             return `[${timestamp}] ${message}`;
-        })
+        });
 
         return winston.createLogger({
-            //level: config.logs.level,
+            level: config.logs.level,
             levels: winston.config.npm.levels,
             format: winston.format.combine(
                 winston.format.timestamp({

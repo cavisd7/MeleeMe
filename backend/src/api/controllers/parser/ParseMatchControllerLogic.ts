@@ -1,43 +1,15 @@
 import AWS from 'aws-sdk';
-import SlippiGame, { 
-    OverallType,
-    ActionCountsType 
-} from '@slippi/slippi-js';
+import SlippiGame from '@slippi/slippi-js';
 
 import config from '../../../infra/config';
 import { ServerLogger } from '../../../infra/utils/logging';
 import { ControllerLogic } from '../ControllerLogic';
 
 import { Either, left, right } from '../../../infra/utils/Result';
-import { GenericServerError } from '../../errors/ServerError/GenericServerError';
+import { GenericServerError } from '../../../infra/errors/api/ServerError/GenericServerError';
+import { SlpMatchData } from '../../../types/slp';
 
 type Response = Either<Error, SlpMatchData[]>;
-
-interface SlpMatchInfo {
-    name: string;
-    stage: number; 
-    duration: number;
-    playedOn: string | null;
-    //platform: string;
-    slpVersion: string;
-}
-
-type PlayerStats = Omit<OverallType, 'playerIndex' | 'opponentIndex'>;
-type ActionStats = Omit<ActionCountsType, 'playerIndex' | 'opponentIndex'>;
-
-interface PlayerInfo {
-    nametag: string;
-    character: number; 
-    port: number;
-    controllerFix: string;
-    stats: PlayerStats;
-    actions: ActionStats;
-}
-
-interface SlpMatchData {
-    info: SlpMatchInfo;
-    players: PlayerInfo[];
-}
 
 class ParseMatchControllerLogic implements ControllerLogic<null, Response> {
     constructor () {};

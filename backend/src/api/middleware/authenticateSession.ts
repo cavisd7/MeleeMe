@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import config from '../../infra/config';
 import { AppLogger } from '../../infra/utils/logging';
-import { NoSessionFound } from '../errors/ClientError/AuthenticationError/NoSessionFound';
+import { NoSessionFound } from '../../infra/errors/api/ClientError/AuthenticationError/NoSessionFound';
 
 export const authenticateSession = () => {
     return (req: Request, res: Response, next: NextFunction) => {

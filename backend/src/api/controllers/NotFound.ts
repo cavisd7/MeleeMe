@@ -1,5 +1,5 @@
 import { BaseController } from "./BaseController";
-import { ResourceNotFound } from '../errors/ClientError/ResourceNotFound';
+import { ResourceNotFound } from '../../infra/errors/api/ClientError/ResourceNotFound';
 
 export default class NotFound extends BaseController {
     public async executeImpl (req, res) {
