@@ -16,21 +16,27 @@ interface IMatchService {
 };
 
 class MatchmakingService implements IMatchService {
-    public async createNewMatch (matchRequestNegotions: NegotiateMatchRequest): Promise<void> {
-        const matchRepository = getConnection().getCustomRepository(MatchRepository);
+    private MatchRepository: MatchRepository;
+    private MessageRepository: MessageRepository;
 
+    constructor() {
+        this.MatchRepository = getConnection().getCustomRepository(MatchRepository);
+        this.MessageRepository = getConnection().getCustomRepository(MessageRepository);
+    };
+
+    public async createNewMatch (matchRequestNegotions: NegotiateMatchRequest): Promise<void> {
         const { matchId, ownerUserId, challengerUserId } = matchRequestNegotions;
 
         await Store.client.lrem('match_requests', 1, matchId)
         await Store.client.del(`match:${matchId}`)
 
-        const existingMatch = await matchRepository.readById(matchId);
+        const existingMatch = await this.MatchRepository.readById(matchId);
 
         if (existingMatch) {
             const challenger = await UserMatches.create({ playerId: challengerUserId, matchId, isOwner: false });
             await challenger.save();
         } else {
-            await matchRepository.save(matchId, false);
+            await this.MatchRepository.save(matchId, false);
     
             const owner = await UserMatches.create({ playerId: ownerUserId, matchId, isOwner: true});
             await owner.save();
@@ -41,10 +47,7 @@ class MatchmakingService implements IMatchService {
     };
 
     public async refreshMatch (matchId: string, ownerUserId: string, challengerUserId: string): Promise<void> {
-        const matchRepository = getConnection().getCustomRepository(MatchRepository);
-        const messageRepository = getConnection().getCustomRepository(MessageRepository);
-
-        const existingMatch = await matchRepository.readById(matchId);
+        const existingMatch = await this.MatchRepository.readById(matchId);
 
         if (existingMatch) {
             const challenger = await UserMatches.findOne({ playerId: challengerUserId });
@@ -52,7 +55,7 @@ class MatchmakingService implements IMatchService {
             const owner = await UserMatches.findOne({ playerId: ownerUserId });
             await UserMatches.remove(owner);
             
-            await messageRepository.removeAllByMatch(matchId)
+            await this.MessageRepository.removeAllByMatch(matchId)
         } else {
             AppLogger.error('[MatchmakingService] Error refreshing match. No match found.');
 
@@ -61,11 +64,9 @@ class MatchmakingService implements IMatchService {
     };
 
     public async confirmMatch (data: ConfirmMatch): Promise<void> {
-        const matchRepository = getConnection().getCustomRepository(MatchRepository);
-
         const { matchId, ownerUserId } = data;
 
-        const match = await matchRepository.readById(matchId);
+        const match = await this.MatchRepository.readById(matchId);
 
         if (!match) {
             AppLogger.error('No match found to confirm');
@@ -81,7 +82,7 @@ class MatchmakingService implements IMatchService {
             throw new Error('Only match owner can confirm match');
         };
 
-        await matchRepository.updateMatchById(matchId, { isConfirmed: true });
+        await this.MatchRepository.updateMatchById(matchId, { isConfirmed: true });
     };
 };
 

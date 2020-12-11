@@ -1,8 +1,4 @@
-interface IDatabaseError {
-    message: string;
-};
-
-abstract class DatabaseError implements IDatabaseError {
+abstract class DatabaseError {
     public readonly message: string;
 
     constructor (message: string) {

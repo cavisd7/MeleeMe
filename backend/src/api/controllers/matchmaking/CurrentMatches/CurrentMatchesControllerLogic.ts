@@ -8,15 +8,14 @@ type Response = Either<Error, MatchRequest[]>;
 class CurrentMatchesControllerLogic implements ControllerLogic<null, Response> {
     public async execute (): Promise<Response> {
         const matchKeys = await Store.client.lrange('match_requests', 0, -1);
-        //const matchKeys = await this.store.getAllFromList('match_requests');
-        //const pipeline = this.store.createPipeline();
         const pipeline = Store.client.pipeline();
 
         for (let i = 0; i < matchKeys.length; i++) {
             pipeline.hgetall(`match:${matchKeys[i]}`);
         };
 
-        const matchData = await pipeline.exec()
+        const matchData = await pipeline.exec();
+        
         if (!matchData) return left<Error>(new Error('Error fetching match requests from store'));
 
         let matches: MatchRequest[] = [];

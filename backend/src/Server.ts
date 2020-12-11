@@ -4,7 +4,7 @@ import config from './infra/config';
 import { ServerLogger, AppLogger } from './infra/utils/logging';
 import { SocketServer } from './infra/sockets/SocketServer';
 
-interface IServer {
+export interface IServer {
     start: () => void;
     stop: () => void;
 };

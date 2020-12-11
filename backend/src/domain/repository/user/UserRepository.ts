@@ -20,7 +20,6 @@ export default class UserRepository extends AbstractRepository<User> implements 
         return !!result;
     };
 
-    /*TODO: rethink repo methods */
     public async readUserById (userId: string): Promise<User> {
         return await this.createQueryBuilder("u")
             .leftJoinAndSelect("u.matchConnection", "um")

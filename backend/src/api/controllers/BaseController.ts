@@ -9,7 +9,7 @@ export abstract class BaseController {
 
     public async execute (req, res): Promise<void> {
         try {
-            await this.executeImpl(req, res)
+            await this.executeImpl(req, res);
         } catch (error) {
             ServerLogger.error(`Catching in BaseController`);
             this.fail(res)
@@ -31,23 +31,19 @@ export abstract class BaseController {
         };
     };
 
-    /*protected unchanged<T> (res, dto?: any): void {
-        return res.status(304).json(dto);
-    }*/
-
     protected ok<T> (res, dto?: any): void {
         return res.status(200).json(dto);
     };
 
-    protected fail (res, error?: any) {
+    protected fail (res, error?: any): void {
         return res.status(500).json({ message: 'Server missed a ledgedash :(', error });
     };
 
-    protected notFound (res, error?) {
+    protected notFound (res, error?): void {
         return res.status(404).json(error);
     };
 
-    protected authenticationError (res, error) {
+    protected authenticationError (res, error): void {
         return res.status(401).json({ message: error.message });
     }
 

@@ -20,8 +20,6 @@ if (!AWSCredentials.needsRefresh()) {
     ServerLogger.error('AWS credentials not valid');
 };
 
-const AWSs3 = new AWS.S3();
-
-export { AWSCredentials, AWSConfig, AWSs3 };
+export { AWSCredentials, AWSConfig };
 
 

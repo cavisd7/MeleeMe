@@ -1,9 +1,4 @@
-
-interface IAuthenticationErrorError {
-    message: string;
-}
-
-abstract class AuthenticationError implements IAuthenticationErrorError {
+abstract class AuthenticationError {
     public readonly message: string;
 
     constructor (message: string) {

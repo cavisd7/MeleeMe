@@ -20,7 +20,6 @@ export default class MessageRepository extends AbstractRepository<Message> imple
 
     async getMessages (matchId: string): Promise<Message[]> {
         const raw = await this.createQueryBuilder("m")
-            //.leftJoinAndSelect("m.messages", "mess")
             .leftJoinAndSelect("m.senderId", "u")
             .leftJoinAndSelect("m.matchId", "ma")
             .where("m.matchId = :matchId", { matchId })
@@ -31,13 +30,10 @@ export default class MessageRepository extends AbstractRepository<Message> imple
     }   
 
     async removeAllByMatch (matchId: string): Promise<void> {
-        const res = await this.createQueryBuilder("m")
+        await this.createQueryBuilder("m")
             .delete()
             .from(Message)
             .where("matchId = :matchId", { matchId })
             .execute();
-
-        console.log('deleted messages', res);
-        return;
-    } 
+    }; 
 };

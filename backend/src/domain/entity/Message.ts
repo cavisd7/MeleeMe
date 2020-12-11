@@ -18,9 +18,6 @@ export class Message {
     @ManyToOne(type => User, user => user.messages)
     senderId: User; 
 
-    /*@Column({ nullable: true })
-    avatar: string;*/
-
     @Column()
     sender: string;
 

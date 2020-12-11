@@ -25,12 +25,11 @@ interface IUserService {
 };
 
 class UserService implements IUserService {
-    // TODO: Constructor injection
-    /*private userRepository: IUserRepository;
+    private UserRepository: UserRepository;
 
-    constructor(@GetCustomRepo(UserRepository) private userRepository: UserRepository) {
-        this.userRepository = userRepository;
-    };*/
+    constructor() {
+        this.UserRepository = getConnection().getCustomRepository(UserRepository);
+    };
 
     public async verifyPassword (clearPassword: string, hashedPassword: string): Promise<boolean> {
         return bcrypt.compare(clearPassword, hashedPassword);
@@ -42,8 +41,7 @@ class UserService implements IUserService {
 
     public async findUserByUsername (username: string): Promise<Result<User>> {
         try {
-            const userRepository = getConnection().getCustomRepository(UserRepository);
-            const userRecord = await userRepository.readUserByUsername(username);
+            const userRecord = await this.UserRepository.readUserByUsername(username);
 
             if (!userRecord) {
                 ServerLogger.debug(`${username} does not exist`);
@@ -61,9 +59,7 @@ class UserService implements IUserService {
 
     public async findUserByUserId (userId: string): Promise<Result<User>> {
         try {
-            const userRepository = getConnection().getCustomRepository(UserRepository);
-
-            const userRecord = await userRepository.readUserById(userId);
+            const userRecord = await this.UserRepository.readUserById(userId);
 
             if (!userRecord) {
                 return Result.fail<User>(new UserDoesNotExist(`User does not exist`));
@@ -77,9 +73,7 @@ class UserService implements IUserService {
 
     public async createUser (user: IRegisterUserBody): Promise<Result<User>> {
         try {
-            const userRepository = getConnection().getCustomRepository(UserRepository);
-
-            const newUser = await userRepository.save({...user});
+            const newUser = await this.UserRepository.save({...user});
 
             if (!newUser) {
                 return Result.fail<User>(new PersistenceError());
@@ -93,9 +87,7 @@ class UserService implements IUserService {
 
     public async deleteUser (userId: string): Promise<Result<void>> {
         try {
-            const userRepository = getConnection().getCustomRepository(UserRepository);
-
-            await userRepository.delete(userId);
+            await this.UserRepository.delete(userId);
     
             return Result.success<void>();
         } catch (err) {
@@ -105,9 +97,7 @@ class UserService implements IUserService {
 
     public async updateUser (userId: string, user: { username: string, email: string, netcode: string }): Promise<Result<User>> {
         try {
-            const userRepository = getConnection().getCustomRepository(UserRepository);
-
-            const updatedUser = await userRepository.update(userId, user);
+            const updatedUser = await this.UserRepository.update(userId, user);
     
             return Result.success<User>(updatedUser);
         } catch (err) {
@@ -117,9 +107,7 @@ class UserService implements IUserService {
 
     public async updateUserAvatar (userId: string, avatar: string): Promise<Result<User>> {
         try {
-            const userRepository = getConnection().getCustomRepository(UserRepository);
-
-            const updatedUser = await userRepository.update(userId, { avatar });
+            const updatedUser = await this.UserRepository.update(userId, { avatar });
       
             return Result.success<User>(updatedUser);
         } catch (err) {
@@ -129,9 +117,7 @@ class UserService implements IUserService {
 
     public async updateUserPassword (userId: string, user: { password: string }): Promise<Result<void>> {
         try {
-            const userRepository = getConnection().getCustomRepository(UserRepository);
-
-            await userRepository.update(userId, user);
+            await this.UserRepository.update(userId, user);
     
             return Result.success<void>();
         } catch (err) {

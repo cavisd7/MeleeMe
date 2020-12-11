@@ -5,13 +5,14 @@ import config from './infra/config';
 import { ServerLogger } from './infra/utils/logging';
 import './infra/AWS';
 
-import { Server } from './Server';
-import { createExpressApp } from './infra/loaders/expressLoader';
+import { IServer } from './Server';
 import { connectToDb } from './infra/loaders/dbLoader';
 import createSessionMiddleware from './api/middleware/createSessionMiddleware';
 
 const initServices = async () => {
     const { Store, PubSub } = await import('./infra/store');
+    const { createExpressApp } = await import('./infra/loaders/expressLoader');
+    const { Server } = await import('./Server');
 
     return Promise.all([
         Store.connect(),
@@ -28,7 +29,7 @@ const initServices = async () => {
     });
 };
 
-const initServer = async (): Promise<Server> => {
+const initServer = async (): Promise<IServer> => {
     ServerLogger.info('Initializing server...');
 
     return connectToDb()

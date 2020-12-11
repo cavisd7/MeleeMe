@@ -2,9 +2,8 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 
-//import { ServerLogger } from '../utils/logging';
-import NoNodeEnvError from './errors/NoNodeEnvError';
-import NoDotenvError from './errors/NoDotenvFile';
+import NoNodeEnvError from './errors/internal/NoNodeEnvError';
+import NoDotenvError from './errors/internal/NoDotenvFile';
 
 const NODE_ENV = process.env.NODE_ENV;
 
@@ -15,8 +14,7 @@ if (!NODE_ENV) {
 // https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
 const dotenvFile = `.env.${NODE_ENV}`;
 
-//ServerLogger.info(`Using env file: ${dotenvFile}`);
-console.log(`Using env file: ${dotenvFile}`)
+console.log(`Using env file: ${dotenvFile}`);
 
 if (fs.existsSync(dotenvFile)) {
     dotenv.config({ path: dotenvFile });

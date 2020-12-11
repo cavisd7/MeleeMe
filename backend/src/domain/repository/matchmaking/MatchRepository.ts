@@ -2,7 +2,6 @@ import { AbstractRepository, EntityRepository } from 'typeorm';
 
 import Repository from '..';
 import { Match } from '../../entity/Match';
-import { Message } from '../../entity/Message';
 
 export interface IMatchRepository /*extends Repository<Match>*/ {};
 
@@ -32,8 +31,6 @@ export default class MatchRepository extends AbstractRepository<Match> implement
         const raw = await this.createQueryBuilder("m")
             .leftJoinAndSelect("m.playerConnection", "um")
             .leftJoinAndSelect("um.player", "u")
-            //.select(["u.userId", "u.username", "u.netcode"])
-            //.leftJoinAndSelect("m.messages", "mess")
             .where("m.matchId IN (:...matchId)", { matchId: matchIds })
             .getMany()
         

@@ -1,8 +1,4 @@
-interface IServerError {
-    message: string;
-};
-
-abstract class ServerError implements IServerError {
+abstract class ServerError {
     public readonly message: string;
 
     constructor (message: string) {

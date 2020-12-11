@@ -16,14 +16,19 @@ interface IChatService {
 
 //TODO: rename
 class ChatService implements IChatService {
+    private MatchRepository: MatchRepository;
+    private MessageRepository: MessageRepository;
+
+    constructor() {
+        this.MatchRepository = getConnection().getCustomRepository(MatchRepository);
+        this.MessageRepository = getConnection().getCustomRepository(MessageRepository);
+    };
+
     public async createNewMessage (message: Message): Promise<void> {
         try {
-            const messageRepository = getConnection().getCustomRepository(MessageRepository);
-            const matchRepository = getConnection().getCustomRepository(MatchRepository);
-
             const { matchId, messageId, senderId, sender, text, dateSent } = message;
 
-            const match = await matchRepository.readById(matchId);
+            const match = await this.MatchRepository.readById(matchId);
 
             if (!match) {
                 AppLogger.error('[ChatService] Can\'t create message. No match found');
@@ -32,7 +37,7 @@ class ChatService implements IChatService {
             };
 
             //TODO: types
-            await messageRepository.save(message);
+            await this.MessageRepository.save(message);
         } catch (err) {
             ServerLogger.error('[ChatService] Error saving message');
 
@@ -42,9 +47,7 @@ class ChatService implements IChatService {
 
     public async findMatches (matchIds: string[]): Promise<Result<UserMatch[]>> {
         try {
-            const matchRepository = getConnection().getCustomRepository(MatchRepository);
-
-            const matches = await matchRepository.readMultipleById(matchIds);
+            const matches = await this.MatchRepository.readMultipleById(matchIds);
 
             const payload: UserMatch[] = matches.map((match) => {
                 return {
@@ -72,9 +75,7 @@ class ChatService implements IChatService {
 
     public async getMatchMessages (matchId: string): Promise<Result<Message[]>> {
         try {
-            const messageRepository = getConnection().getCustomRepository(MessageRepository);
-    
-            const messages = await messageRepository.getMessages(matchId);
+            const messages = await this.MessageRepository.getMessages(matchId);
             
             const payload = messages.map((message, i) => {
                 return {

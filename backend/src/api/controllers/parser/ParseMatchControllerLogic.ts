@@ -3,39 +3,35 @@ import SlippiGame from '@slippi/slippi-js';
 
 import config from '../../../infra/config';
 import { ServerLogger } from '../../../infra/utils/logging';
-import { ControllerLogic } from '../ControllerLogic';
-
 import { Either, left, right } from '../../../infra/utils/Result';
+import { ControllerLogic } from '../ControllerLogic';
 import { GenericServerError } from '../../../infra/errors/api/ServerError/GenericServerError';
 import { SlpMatchData } from '../../../types/slp';
 
 type Response = Either<Error, SlpMatchData[]>;
 
 class ParseMatchControllerLogic implements ControllerLogic<null, Response> {
-    constructor () {};
-
     public async execute (slpPath: any[]): Promise<Response> {
         const s3 = new AWS.S3();
         let parsedMatches: SlpMatchData[] = [];
 
-        const requests = slpPath.map((match, i) => {
+        const requests = slpPath.map(match => {
             return new Promise((resolve, reject) => {
                 let chunks = [];
 
                 s3.getObject({ Bucket: config.aws.parserBucket, Key: match })
                     .createReadStream()
-                    .on('data', (data) => {
-                        chunks.push(Buffer.from(data))
-                    })
-                    .on('end', () => {
-                        console.log('buffer end')
-                        resolve(Buffer.concat(chunks))
-                    })
-                    .on('error', (err) => {
-                        reject(err)
-                    })
-            })
-        })
+                        .on('data', (data) => {
+                            chunks.push(Buffer.from(data));
+                        })
+                        .on('end', () => {
+                            resolve(Buffer.concat(chunks));
+                        })
+                        .on('error', (err) => {
+                            reject(err);
+                        });
+            });
+        });
 
         await Promise.all(requests)
             .then(res => {
@@ -88,10 +84,10 @@ class ParseMatchControllerLogic implements ControllerLogic<null, Response> {
                 })
             })
             .catch(err => {
-                ServerLogger.error('Error making S3 requests');
+                ServerLogger.error(`[ParseMatchControllerLogic] Error making S3 requests: ${err}`);
 
-                return left<GenericServerError>(new GenericServerError())
-            })
+                return left<GenericServerError>(new GenericServerError());
+            });
 
         return right<SlpMatchData[]>(parsedMatches);
     };

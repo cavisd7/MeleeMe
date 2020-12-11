@@ -1,11 +1,9 @@
 import express, { Router } from 'express';
-import path from 'path';
+import os from 'os';
 
 /* Routers */
 import { v1Router } from './v1Router';
 import { notFoundRouter } from './notFoundRouter';
-
-import os from 'os';
 
 /* Root router: melee.me/ */
 const rootRouter = Router();

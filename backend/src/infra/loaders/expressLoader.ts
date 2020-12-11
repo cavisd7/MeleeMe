@@ -6,8 +6,11 @@ import helmet from 'helmet';
 
 import config from '../config';
 import { rootRouter } from '../../api/routers/index';
+import { ServerLogger } from '../utils/logging';
 
 export const createExpressApp = (authenticateSession) => {
+    ServerLogger.debug('Creating express app...');
+
     const app: express.Application = express();
     
     /* Trust first proxy if running in production */
@@ -25,6 +28,12 @@ export const createExpressApp = (authenticateSession) => {
 
     /* API Routes */
     app.use('/', rootRouter);
+
+    app.use('*', (err, req, res, next) => {
+        ServerLogger.error(`Error handling request: ${err}`);
+
+        return res.status(500).json({ message: 'Could not handle request' });
+    });
 
     return app;
 };
