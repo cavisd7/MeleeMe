@@ -47,7 +47,7 @@ const ChatConversationWrapper: React.FC<Props> = (props) => {
 
     return (
         <React.Fragment>
-            <Grid item style={{ /*minHeight: '60px', maxHeight: '60px' */ }}>
+            <Grid item>
                 <ChatConversationHeader 
                     handleSearchChange={handleSearchChange}
                     correspondentUsername={match.players.filter(player => player.userId !== userId)[0].username} 
@@ -65,7 +65,7 @@ const ChatConversationWrapper: React.FC<Props> = (props) => {
             <Grid item style={{flex: '1 1 0', height: '0px', overflowY: 'auto', width:'100%', maxWidth: '100%'}}>
                 <ChatMessageList messages={visibleMessages}/>
             </Grid>
-            <Grid item style={{/*maxHeight: '50px'*/padding: '2rem 1rem'}}>
+            <Grid item style={{ padding: '2rem 1rem'}}>
                 <ChatInput sendMessage={sendMessage}/>
             </Grid>
         </React.Fragment>

@@ -1,5 +1,4 @@
 import { Reducer } from 'redux';
-import { isType } from 'typescript-fsa';
 
 import { APIError } from 'api/types';
 

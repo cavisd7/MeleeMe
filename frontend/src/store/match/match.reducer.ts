@@ -1,7 +1,7 @@
 import { Reducer } from 'redux';
 import { isType } from 'typescript-fsa';
 
-import { APIError, APIErrorResponse } from 'api/types';
+import { APIErrorResponse } from 'api/types';
 import { Match } from 'types/match';
 import { addMatch, getUsersMatches, updateMatchConfirmed, removeMatch } from './match.actions';
 

@@ -22,7 +22,6 @@ import {
 } from '../matchmaking/matchmaking.actions';
 import { connectSocket, disconnectSocket, ERROR } from '../socket/socket.actions';
 import { 
-    sendMessage, 
     SEND_CHAT_MESSAGE, 
     newConversation, 
     NEW_CHAT_MESSAGE, 
@@ -75,33 +74,9 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
                 dispatch(receivedMessage(payload));
                 break;
             case NEW_MATCH_REQUEST:
-                console.log('got NEW_MATCH_REQUEST');
                 dispatch(newMatchRequest(payload as MatchRequest));
                 break;
             case RECEIVED_MATCH_NEGOTIATIONS:
-                dispatch(receivedMatchNegotiations(payload as NegotiateMatchRequest)); //TODO: split on backend?
-                dispatch(addMatch({
-                    matchId: payload.matchId,
-                    players: [
-                        {
-                            userId: payload.ownerUserId,
-                            username: payload.ownerUsername,
-                            netcode: payload.ownerNetcode,
-                            isOwner: true //TODO: fix
-                        },
-                        {
-                            userId: payload.challengerUserId,
-                            username: payload.challengerUsername,
-                            netcode: payload.challengerNetcode,
-                            isOwner: false //TODO: fix
-                        }
-                    ],
-                    isConfirmed: false
-                }));
-                dispatch(newConversation({matchId: payload.matchId }));
-                break;
-            case MATCH_REQUEST_ACK:
-                console.log('got MATCH_REQUEST_ACK');
                 dispatch(receivedMatchNegotiations(payload as NegotiateMatchRequest));
                 dispatch(addMatch({
                     matchId: payload.matchId,
@@ -110,13 +85,35 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
                             userId: payload.ownerUserId,
                             username: payload.ownerUsername,
                             netcode: payload.ownerNetcode,
-                            isOwner: true //TODO: fix
+                            isOwner: true
                         },
                         {
                             userId: payload.challengerUserId,
                             username: payload.challengerUsername,
                             netcode: payload.challengerNetcode,
-                            isOwner: false //TODO: fix
+                            isOwner: false 
+                        }
+                    ],
+                    isConfirmed: false
+                }));
+                dispatch(newConversation({matchId: payload.matchId }));
+                break;
+            case MATCH_REQUEST_ACK:
+                dispatch(receivedMatchNegotiations(payload as NegotiateMatchRequest));
+                dispatch(addMatch({
+                    matchId: payload.matchId,
+                    players: [
+                        {
+                            userId: payload.ownerUserId,
+                            username: payload.ownerUsername,
+                            netcode: payload.ownerNetcode,
+                            isOwner: true
+                        },
+                        {
+                            userId: payload.challengerUserId,
+                            username: payload.challengerUsername,
+                            netcode: payload.challengerNetcode,
+                            isOwner: false
                         }
                     ],
                     isConfirmed: false
@@ -128,16 +125,10 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
                 break;
 
             case MATCH_CONFIRMED:
-                //for challenger and owner
-                //set negotiation to null
                 dispatch(updateMatchConfirmed(payload));
                 dispatch(resetNegotiating());
                 break;
             case MATCH_DENIED: 
-                //for challenger and owner
-                //set negotiation to null
-                //remove match from matches
-                console.log('MATCH_DENIED message')
                 dispatch(removeMatch(payload));
                 dispatch(resetNegotiating());
                 break;
@@ -156,7 +147,6 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
         switch (actionType) {
             case SEND_CHAT_MESSAGE:
                 messageType = SEND_CHAT_MESSAGE;
-                //channel = actionPayload.matchId;
                 channel = 'GROUP';
                 break;
             case CREATE_MATCH_REQUEST:
@@ -169,18 +159,15 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
                 break;
             case CONFIRM_MATCH:
                 messageType = CONFIRM_MATCH;
-                //channel = actionPayload.matchId;
                 channel = 'GROUP';
                 break;
             case DENY_MATCH:
                 messageType = DENY_MATCH;
-                //channel = actionPayload.matchId;
                 channel = 'GROUP';
                 break;
             default: break;
         }
 
-        //TODO: just use actionType 
         const transport: { type: SocketMessageTypes; channel: string; payload: any; } = { type: messageType, channel, payload: actionPayload };
         const data = JSON.stringify(transport);
         socket.send(data);
@@ -199,7 +186,6 @@ export const socketMiddleware = (): Middleware<any, ApplicationState, any> => {
                     socket.onmessage = onMessage(store);
                     socket.onclose = (event) => {
                         console.log('close event', event);
-                        //new WebSocket(payload);
                     };
                     socket.onopen = onOpen(store);
                     socket.onerror = onError(store);

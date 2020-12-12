@@ -3,7 +3,6 @@ import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core'; 
 import Paper from '@material-ui/core/Paper'; 
 import Grid from '@material-ui/core/Grid'; 
-//import Table from '@material-ui/core/Table'; 
 
 import CustomTable from './CustomTable';
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import SvgIcon from "@material-ui/core/SvgIcon"
-import SlippiLogo from '../../assets/SlippiLogo.81afd6df.svg'
 
 const SlippiIcon = (props) => {
     return (

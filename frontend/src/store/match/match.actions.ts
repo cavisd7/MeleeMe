@@ -1,6 +1,5 @@
 import { actionCreatorFactory } from 'typescript-fsa';
 
-import { Message } from 'types/message';
 import { Match } from 'types/match';
 
 import { APIErrorResponse } from 'api/types'

@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { NegotiateMatchRequest } from 'types/match';
-
 import TableRow from '@material-ui/core/TableRow';
 import CustomTableRow from '../../../core/Table/CustomTableRow';
 import { WithStyles, Theme, withStyles, createStyles, Paper, Grid, Collapse, TableCell, Typography, Avatar, Button } from '@material-ui/core';
@@ -15,8 +13,6 @@ type Classes = 'root' | 'hidden';
 const styles = (theme: Theme) =>
   createStyles({
         root: {
-            //boxShadow: '300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-            //borderLeft: '4px solid transparent',
             transition: 'border-color 225ms ease-in-out',
             borderLeft: '4px solid transparent',
             '&:before': {
@@ -85,12 +81,11 @@ const RequestItemRow: React.FC<CombinedProps> = (props) => {
         <React.Fragment>
             <CustomTableRow
                 hover
-                key={matchId}//TODO: fix key
+                key={matchId}
                 selected={selected}
                 onClick={(e) => handleClick(e, matchId)}
                 onMouseOver={() => setShowPlay(true)}
                 onMouseOut={() => setShowPlay(false)}
-                //classes={{ root: classes.root }}
                 className={classes.root}
             >   
                 <RequestTableCell> 

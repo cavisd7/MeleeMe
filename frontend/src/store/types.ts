@@ -9,23 +9,19 @@ import { MatchmakingSocketTypes } from "./matchmaking/matchmaking.actions";
 import { SocketTypes } from "./socket/socket.actions";
 
 export type SocketMessageTypes = 
-    | ChatSocketTypes.CLIENT_CHAT_MESSAGE
+    | ChatSocketTypes.SEND_CHAT_MESSAGE
     | ChatSocketTypes.NEW_CHAT_MESSAGE
     | MatchmakingSocketTypes.CREATE_MATCH_REQUEST
     | MatchmakingSocketTypes.INITIATE_MATCH_NEGOTIATIONS
-    | MatchmakingSocketTypes.DELETE_MATCH_REQUEST
     | MatchmakingSocketTypes.NEW_MATCH_REQUEST
     | MatchmakingSocketTypes.RECEIVED_MATCH_NEGOTIATIONS
     | MatchmakingSocketTypes.MATCH_REQUEST_ACK
-    | MatchmakingSocketTypes.REMOVE_MATCH
+    | MatchmakingSocketTypes.REMOVE_MATCH_REQUEST
     | MatchmakingSocketTypes.DENY_MATCH
     | MatchmakingSocketTypes.CONFIRM_MATCH
     | MatchmakingSocketTypes.MATCH_CONFIRMED
     | MatchmakingSocketTypes.MATCH_DENIED
-    | MatchmakingSocketTypes.MATCH_DENIED_COMPLETE
-    | MatchmakingSocketTypes.MATCH_CONFIRMED_COMPLETE
     | SocketTypes.ERROR
-    //| MatchmakingSocketTypes.GOT_CURRENT_MATCH_REQUESTS
     ;
 
 export interface SocketAction<T extends SocketMessageTypes, U> {

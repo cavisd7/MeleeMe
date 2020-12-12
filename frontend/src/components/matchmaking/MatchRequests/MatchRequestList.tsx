@@ -13,7 +13,6 @@ import TableWrapper from '../../core/Table/TableWrapper';
 
 import RequestItemRow from './ui/RequestItemRow';
 import RequestTableHead from './ui/RequestTableHead';
-//import RequestTable from './ui/RequestTable';
 
 interface Props {
     requests: MatchRequest[];
@@ -35,7 +34,6 @@ const MatchRequestList: React.FC<Props> = props => {
 
     const selectRequestForNegotiation = (key: number) => {
         negotiateMatch(requests[key]);
-        //history.push(`/messages/${requests[key].matchId}`);
     }
 
     React.useEffect(() => {

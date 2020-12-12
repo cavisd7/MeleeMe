@@ -41,7 +41,6 @@ const SideMenu: React.FC<Props> = props => {
             anchor='left'
             variant='temporary'
             open={isOpen}
-            //onClose={setToggleDrawer}
             ModalProps={{ onBackdropClick: handleToggleDrawer }}
         >
             <div style={{ marginTop: '48px' }}>

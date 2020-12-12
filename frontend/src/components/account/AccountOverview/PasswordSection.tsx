@@ -54,7 +54,6 @@ const PasswordSection: React.FC<Props> = (props) => {
 
     const classes = useStyles();
 
-    //const [showConfirm, setShowConfirm] = React.useState(false);
     const [isEditing, setIsEditing] = React.useState(false);
     const [failed, setFailed] = React.useState(false);
 

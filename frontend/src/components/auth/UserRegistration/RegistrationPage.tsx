@@ -5,7 +5,7 @@ import { APIErrorResponse } from 'api/types';
 import { RegistrationInput } from 'api/account/types';
 import { registerAccountSchema } from 'api/account/schemas';
 
-import { Field, getIn } from 'formik'; 
+import { Field } from 'formik'; 
 import { Theme, makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -65,7 +65,6 @@ const RegistrationPage: React.FC<CombinedProps> = props => {
             history.push('/');
         })
         .catch(err => { 
-            console.log('error', err)
             setFailed(true);
         });
     };

@@ -1,5 +1,4 @@
 import { User } from './user';
-import { Message } from './message';
 
 export type PlayableCharacter = 'Mario' | 'Luigi' | 'Donkey Kong' | 'Link' | 'Samus' | 'Yoshi' | 'Kirby' | 'Fox'
     | 'Pikachu' | 'Jigglypuff' | 'C. Falcon' | 'Ness' | 'Peach' | 'Bowser' | 'Dr. Mario' | 'Zelda' | 'Sheik' | 'Young Link'
@@ -11,7 +10,6 @@ export type Player = Pick<User, 'userId' | 'username' | 'netcode'> & { isOwner: 
 export interface Match {
     matchId: string;
     players: Player[];
-    //messages: Message[];
     isConfirmed?: boolean;
 };
 

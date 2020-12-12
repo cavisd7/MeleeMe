@@ -2,7 +2,6 @@ import React from 'react';
 
 import { makeStyles, Theme } from '@material-ui/core'; 
 import TableCell, { TableCellProps } from '@material-ui/core/TableCell'; 
-import TableSortLabel from '@material-ui/core/TableSortLabel'; 
 
 const useStyles = makeStyles((theme: Theme) => ({
 }));

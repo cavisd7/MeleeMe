@@ -19,7 +19,6 @@ import SlippiIcon from '../../core/SlippiIcon';
 import FormikForm from '../../core/formik/FormikForm';
 import FormikOutlinedInputWrapper from '../../core/formik/FormikOutlinedInputWrapper';
 import FormikNetcodeOutlinedInputWrapper from '../../core/formik/FormikNetcodeOutlinedInputWrapper';
-import CustomButton from '../../core/CustomButton';
 
 const useStyles = makeStyles((theme: Theme) => ({
     paper: {
@@ -40,8 +39,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     icon: {
         width: theme.spacing(8),
         height: theme.spacing(8),
-        //marginLeft: '0.5rem',
-        //marginRight: '1.5rem'
     },
     submit: {
         marginTop: '2rem'
@@ -52,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    user: User; //TODO: trim
+    user: User;
     accountError: APIErrorResponse | null;
     updateAccount: (updateAcountParams) => Promise<any>;
     updateAvatar: (avatar: string) => void;
@@ -101,10 +98,6 @@ const AccountInfoSection: React.FC<Props> = props => {
         setIsEditing(false);
     };
 
-    /*const watchProgress = (event) => {
-        console.log(event)
-    }*/
-
     const submitProfilePicture = () => {
         const data = new FormData();
         data.append(`profile`, validFile, validFile.name);
@@ -114,19 +107,16 @@ const AccountInfoSection: React.FC<Props> = props => {
                 url: '/users/avatar', 
                 method: 'put', 
                 data,
-                //onUploadProgress: (event) => watchProgress(event) 
             }
         ).then(res => {
-            console.log(res.data)
             setAvatarError(false)
             setValidFile(null);
             updateAvatar(res.data.avatar)
         })
         .catch(err => {
-            console.log(err)
             setAvatarError(true)
         });
-    }
+    };
 
     const validateFiles = (files: FileList) => {
         if (files.length === 1 && files[0].size < 10 * 1000000) {
@@ -144,16 +134,15 @@ const AccountInfoSection: React.FC<Props> = props => {
 
     const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            console.log(e.target)
             validateFiles(e.target.files);
         };
-    }
+    };
 
     const cancelProfilePicture = () => {
         setValidFile(null);
         setPreviewSrc('');
         setAvatarError(false)
-    } 
+    }; 
 
     return (
         <Paper className={classes.paper}>

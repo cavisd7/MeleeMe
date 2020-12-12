@@ -31,7 +31,6 @@ const styles = (theme: Theme) =>
         maxHeight: '56px',
     },
     label: {
-        //marginTop: theme.spacing(0.8),
         fontSize: '0.9rem',
         fontWeight: 600,
         color: '#555',
@@ -129,7 +128,6 @@ class CharacterSelect extends React.PureComponent<CombinedProps> {
                                 horizontal: "left",
                             },
                             classes: {
-                                //select: classes.select,
                                 paper: classes.paper,
                                 list: classes.list
                             }

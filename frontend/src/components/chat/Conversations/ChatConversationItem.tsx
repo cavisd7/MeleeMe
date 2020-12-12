@@ -10,15 +10,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: '5px',
         '&:hover': {
             backgroundColor: '#e6dfdf',
-            //color: 'green',
         },
     },
     primaryText: {
-        /*transition: 'color 225ms ease-in-out',
-        color: '#473d3c',
-        '&:hover': {
-            color: '#000 !important'
-        }*/
     }
 }));
 
@@ -38,10 +32,6 @@ const ChatConversationItem: React.FC<Props> = (props) => {
     } = props;
 
     const classes = useStyles();
-
-    /*const handleSelect = (e: React.MouseEvent) => {
-
-    } */  
 
     return (
         <ListItem
@@ -65,23 +55,9 @@ const ChatConversationItem: React.FC<Props> = (props) => {
                         </Typography>
                     </React.Fragment>
                 }
-                /*secondary={
-                    <Hidden mdDown>
-                        <Typography variant='caption' noWrap style={{ color: 'rgba(0, 0, 0, 0.45)', width: '8rem', display: 'block' }}>
-                            Filler message
-                        </Typography>
-                    </Hidden>
-                }*/
-                classes={{
-                    //primary: classes.primaryText,
-                }}
             />
         </ListItem>
     );
 };
 
 export default ChatConversationItem;
-
-/**
- * <Typography variant='subtitle2' style={{ color: '#473d3c' }}>
- */

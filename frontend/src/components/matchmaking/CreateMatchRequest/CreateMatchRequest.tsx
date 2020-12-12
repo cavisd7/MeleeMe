@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { MatchRequest, MatchRequestInput } from 'types/match';
+import { MatchRequestInput } from 'types/match';
 
 import { makeStyles, Theme } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';

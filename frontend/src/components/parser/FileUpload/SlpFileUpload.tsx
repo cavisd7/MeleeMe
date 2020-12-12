@@ -2,7 +2,7 @@ import React from 'react';
 import * as uuid from 'uuid';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { apiv1, v1Request } from 'api/index'
+import { v1Request } from 'api/index'
 import { SlpMatchData } from '../../../store/parser/types';
 
 import Grid from '@material-ui/core/Grid';
@@ -18,7 +18,6 @@ interface F {
 
 interface Props {
     history: RouteComponentProps['history'];
-    //slpFileUpload: (data: any, request: any) => Promise<any>;
     setParsedSlpGames: (gameSet: { setId: string; games: SlpMatchData[]; }) => void;
 }
 
@@ -27,7 +26,6 @@ const SlpFileUpload: React.FC<Props> = (props) => {
 
     const [files, setFiles] = React.useState<File[]>([]);
     const [filesTest, setfilesTest] = React.useState<F[]>([]);
-    const [progress, setProgress] = React.useState<number[]>([]);
     const [waitingMessage, setWaitingMessage] = React.useState(false);
 
     const addFiles = (files: File[]) => {
@@ -52,7 +50,6 @@ const SlpFileUpload: React.FC<Props> = (props) => {
     }
 
     const watchProgress = (index) => (progressEvent) => {
-        //TODO: fix
         setfilesTest(prevState => {
             return prevState.map((file, j) => {
                 if (j === index) {
@@ -87,18 +84,13 @@ const SlpFileUpload: React.FC<Props> = (props) => {
             ).then(res => res.data);
 
             requests.push(request);
-            //requests.push(slpFileUpload(data, request));
         });
 
         Promise.all(requests)
             .then(res => {
                 const setId = uuid.v4();
-                setParsedSlpGames({ setId, games: res[0] });//TODO: fix
+                setParsedSlpGames({ setId, games: res[0] });
                 history.push(`/parser/${setId}/0`);
-            })
-            .catch(err => {
-                console.log('error uploading', err)
-                //TODO: set errors
             })
     };
 

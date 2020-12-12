@@ -1,15 +1,5 @@
 import { actionCreatorFactory } from 'typescript-fsa';
 
-import { 
-    UserAuthentication, 
-    UserPayload, 
-    AuthenticationValidationErrors, 
-    UpdateAccountValidationErrors,
-    UpdateAccountParams,
-    RegistrationInput,
-    DeleteAccountParams
-} from 'api/account/types';
-
 import { APIErrorResponse } from 'api/types';
 import { SlpMatchData } from './types';
 

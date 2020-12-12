@@ -14,8 +14,7 @@ import {
 } from './account.actions';
 
 import { User, Token } from 'types/user';
-import { APIError, APIErrorResponse } from 'api/types';
-import { AuthenticationValidationErrors } from 'api/account/types';
+import { APIErrorResponse } from 'api/types';
 
 import { storage } from '../../storage';
 

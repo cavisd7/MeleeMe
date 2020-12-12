@@ -25,7 +25,6 @@ const styles = (theme: Theme) =>
             marginTop: theme.spacing(2),
             padding: theme.spacing(4),
             paddingBottom: theme.spacing(2) + theme.spacing(1) / 2,
-            //boxShadow: 'none'
         },
         container: {
             marginBottom: theme.spacing(1)

@@ -17,10 +17,8 @@ type Classes =
 const styles = (theme: Theme) =>
     createStyles({
         container: {
-            //width: '100%',
             padding: theme.spacing(0, 2),
             backgroundColor: '#f7f8fb',
-            //color: '#62738d'
             color: 'rgba(0, 0, 0, 0.45)'
         }
     });

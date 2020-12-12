@@ -20,11 +20,10 @@ const ChatMessageList: React.FC<Props> = (props) => {
     }
 
     React.useEffect(() => {
-        console.log('[list] message length', new Date('2020-11-10T06:21:36.301Z').getDate())
         if (messages.length > 0 && chatEndRef.current) {
             scrollToBottom();
-        }
-    })
+        };
+    });
 
     const showTime = (currSenderId: string, prevSenderId: string, latestDateSent: Date, prevDateSent: Date, index: number): boolean => {
         let prevIndex = index - 1;
@@ -53,7 +52,6 @@ const ChatMessageList: React.FC<Props> = (props) => {
                     return (
                         <React.Fragment key={message.messageId}>
                             <ChatMessageItem 
-                                //key={message.messageId}
                                 avatar={message.avatar}
                                 messageId={message.messageId}
                                 sender={message.sender}

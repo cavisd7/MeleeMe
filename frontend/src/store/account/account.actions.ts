@@ -3,8 +3,6 @@ import { actionCreatorFactory } from 'typescript-fsa';
 import { 
     UserAuthentication, 
     UserPayload, 
-    AuthenticationValidationErrors, 
-    UpdateAccountValidationErrors,
     UpdateAccountParams,
     RegistrationInput,
     DeleteAccountParams,

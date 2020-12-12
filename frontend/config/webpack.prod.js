@@ -105,8 +105,8 @@ module.exports = {
     },
     performance: {
         hints: 'error',
-        maxEntrypointSize: 1180000, // ~1.12 MiB
-        maxAssetSize: 1180000, // ~1.12 MiB,
+        maxEntrypointSize: 1180000,
+        maxAssetSize: 1180000,
         assetFilter: function (assetFilename) {
             return !(
                 assetFilename.endsWith('.chunk.js') || assetFilename.endsWith('.map')

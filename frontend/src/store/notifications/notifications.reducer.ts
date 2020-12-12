@@ -1,7 +1,4 @@
 import { Reducer } from 'redux';
-import { isType } from 'typescript-fsa';
-
-//import { } from './notifications.actions';
 
 import { Notifications } from 'types/notification';
 
@@ -14,24 +11,24 @@ export const notificationsInitialState: NotificationsState = {
         'hi': [
             {
                 type: 'chat',
-                sender: 'atlas',
+                sender: 'test',
                 message: 'hi'
             },
             {
                 type: 'chat',
-                sender: 'atlas',
+                sender: 'test',
                 message: 'hi'
             },
         ],
         'two': [
             {
                 type: 'chat',
-                sender: 'atlas',
+                sender: 'test',
                 message: 'hi'
             },
             {
                 type: 'chat',
-                sender: 'atlas',
+                sender: 'test',
                 message: 'hi'
             },
         ]

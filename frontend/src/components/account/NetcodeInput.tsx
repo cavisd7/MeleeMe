@@ -1,6 +1,17 @@
 import React from 'react';
 
-import { createStyles, Theme, withStyles, WithStyles, InputLabel, FilledInputProps, FilledInput, FormHelperText, InputAdornment, Grid } from "@material-ui/core";
+import { 
+    createStyles, 
+    Theme, 
+    withStyles, 
+    WithStyles, 
+    InputLabel,
+    FilledInputProps, 
+    FilledInput, 
+    FormHelperText, 
+    InputAdornment, 
+    Grid 
+} from "@material-ui/core";
 
 type Classes =
     | 'root'
@@ -65,15 +76,9 @@ class NetcodeInput extends React.PureComponent<CombinedProps, State> {
         value: ''
     };
 
-    componentDidUpdate() {
-        console.log(this.state);
-    }
-
     handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log('running')
         const { min, max, onChange } = this.props;
         const { value } = e.target;
-        console.log('value', value)
 
         let updatedValue;
 
@@ -121,8 +126,6 @@ class NetcodeInput extends React.PureComponent<CombinedProps, State> {
                 <Grid container spacing={1}>
                     <Grid item xs={6}>
                         <FilledInput
-                            //fullWidth 
-                            //disableUnderline
                             {...this.props}
                             value={value}
                             onChange={this.handleChange}
@@ -141,8 +144,6 @@ class NetcodeInput extends React.PureComponent<CombinedProps, State> {
                     </Grid>
                     <Grid item xs={6}>
                         <FilledInput
-                            //fullWidth 
-                            //disableUnderline
                             {...this.props}
                             value={value}
                             onChange={this.handleChange}

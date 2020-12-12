@@ -9,11 +9,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     paper: {
         backgroundColor: 'transparent'
     },
-    playerCell: {
-        /*[theme.breakpoints.down('sm')]: {
-            width: '100%'
-        }*/
-    }
+    playerCell: {}
 }));
 
 interface ParserHeadCellDetails {

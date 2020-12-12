@@ -1,7 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { 
-    BrowserRouter, 
     HashRouter,
     Route, 
     Switch 
@@ -12,7 +11,6 @@ import store from './store/index';
 
 import { 
     ThemeProvider, 
-    createMuiTheme 
 } from '@material-ui/core';
 import { theme } from './theme';
 
@@ -30,7 +28,7 @@ const Authentication = Loadable({
 render(
     <Provider store={store}>
         <HashRouter>
-                <ThemeProvider theme={theme}> {/*TODO: location and match props warning */}
+                <ThemeProvider theme={theme}>
             <Switch>
                 <Route exact path="/auth/*" 
                     render={ (props) => 

@@ -37,7 +37,6 @@ const customButton: React.StatelessComponent<CombinedProps> = props => {
                 disableElevation
                 {...rest}
                 disabled={props.disabled}
-                //color={props.color}
             >
                 <span>
                     {props.children}

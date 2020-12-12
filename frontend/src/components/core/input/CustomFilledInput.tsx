@@ -83,38 +83,11 @@ class CustomFilledInput extends React.PureComponent<CombinedProps, State> {
         _helperText: this.props.helperText
     };
 
-    componentDidMount() {
-        //this.setState({ _error: this.props.error })
-    }
-
-    componentDidUpdate() {
-        //console.log(this.state);
-    }
-
     handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { min, max, onChange, defaultErrorMessage } = this.props;
+        const { min, max, onChange } = this.props;
         const { value } = e.target;
 
-        console.log('e', e)
-        console.log('props', this.props)
-
-        //this.setState({ value });
-
         if (onChange) {
-            /*if (e.target.value !== value) {
-                const clonedE = {
-                    ...e,
-                    target: e.target.cloneNode()
-                } as React.ChangeEvent<HTMLInputElement>;
-
-                clonedE.target.value = value + '';
-            } else {
-                if (min && e.target.value.length < min) {
-                    this.setState({ _error: true, _helperText: defaultErrorMessage });
-                } else if (this.state._error && e.target.value.length >= min) {
-                    this.setState({ _error: false, _helperText: '' });
-                };
-            };*/
             onChange(e);
         };
     };
@@ -123,7 +96,6 @@ class CustomFilledInput extends React.PureComponent<CombinedProps, State> {
         const {
             classes,
             label,
-            errorText,
             value,
             inputProps,
             max,
@@ -148,13 +120,10 @@ class CustomFilledInput extends React.PureComponent<CombinedProps, State> {
                 }
                 <div>
                     <FilledInput
-                        //fullWidth 
-                        //disableUnderline
                         multiline={multiline}
                         {...this.props}
                         value={value}
                         onChange={this.handleChange}
-                        //error={(this.state._error)}
                         inputProps={{
                             id: label,
                             maxLength: max || 32,
@@ -174,7 +143,6 @@ class CustomFilledInput extends React.PureComponent<CombinedProps, State> {
                     className={error ? classes.errorStyle : classes.helperTextHidden}
                 >
                     {
-                        //_helperText
                         helperText
                     }
                 </FormHelperText>

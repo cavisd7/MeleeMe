@@ -9,11 +9,6 @@ import {
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 
 import TableWrapper from '../../../core/Table/TableWrapper';
@@ -76,14 +71,8 @@ const PlayerStats: React.FC<CombinedProps> = (props) => {
         conversionCount: 'Conversion Count',
         totalDamage: 'Total Damage',
         killCount: 'Kill Count',
-        //successfulConversions: stats.overall[j].successfulConversions,
-        //openingsPerKill: stats.overall[j].openingsPerKill,
         neutralWinRatio: 'Openings per Kill',
         counterHitRatio: 'Counter Hits'
-
-        //inputsPerMinute: stats.overall[j].inputsPerMinute,
-        //damagePerOpening: stats.overall[j].damagePerOpening,
-        //beneficialTradeRatio: stats.overall[j].beneficialTradeRatio
     };
 
     const actionsMap: ActionsMap = {
@@ -113,7 +102,7 @@ const PlayerStats: React.FC<CombinedProps> = (props) => {
     };
 
     return (
-        <Paper style={{ padding: '2rem', /*backgroundColor: '#ededee'*/ }}>
+        <Paper style={{ padding: '2rem' }}>
             <Grid container>
                 <Grid item xs={12}>
                     <Typography className={classes.title} variant='h5'>Combat</Typography>

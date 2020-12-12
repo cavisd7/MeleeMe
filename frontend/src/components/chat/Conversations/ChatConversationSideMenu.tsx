@@ -5,7 +5,6 @@ import { Match } from 'types/match';
 import { Theme, makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 
-import ChatConversationListHeader from '../ChatConversationListHeader';
 import ChatConversationList from './ChatConversationList';
 import ChatConversationListSearch from './ChatSearchInput';
 
@@ -15,10 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: '#F2F1F1'
     },
     header: {
-        //minHeight: '60px', 
-        //maxHeight: '60px', 
         height: '60px',
-        //backgroundColor: '#eeeded', 
         backgroundColor: '#faf9f9', 
         padding: '0px 10px', 
         borderBottom: '2px solid #e6dfdf',

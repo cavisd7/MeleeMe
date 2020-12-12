@@ -22,7 +22,6 @@ type Classes =
 const styles = (theme: Theme) =>
     createStyles({
         paper: {
-            //minWidth: '600px',
             minHeight: '300px', 
             padding: '1rem', 
             boxShadow: 'none', 
@@ -65,10 +64,6 @@ class SlpFileUploadInput extends React.Component<CombinedProps, State, any> {
 
         this.slpInputRef = React.createRef();
     };
-
-    componentDidUpdate() {
-        console.log(this.state)
-    }
 
     handleDragOver = (e) => {
         e.preventDefault();
@@ -113,7 +108,6 @@ class SlpFileUploadInput extends React.Component<CombinedProps, State, any> {
         };
 
         this.props.addFiles(validFiles);
-        //this.setState(prevState => { return { files: [...prevState.files, ...validFiles], errors: [...errors] }});
     };
 
     render() {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { 
-    RouteComponentProps, 
     Switch, 
     Route,
     Redirect
@@ -46,7 +45,7 @@ const MainContent: React.FC<{}> = (props) => {
                         </Grid>
                     </Grid>
                 </main>
-            <Footer /> {/* TODO: move */}
+            <Footer />
             </div>
         </React.Fragment>
     );

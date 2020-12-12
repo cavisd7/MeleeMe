@@ -13,7 +13,6 @@ const loadStorage = (key: string) => {
     };
 };
 
-//TODO: store raw value?
 const setStorage = (key: string, value: any) => {
     const item = JSON.stringify(value);
 

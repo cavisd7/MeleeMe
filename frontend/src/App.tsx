@@ -1,6 +1,5 @@
 import React from 'react';
-import { RouteComponentProps, Switch, Route, Redirect } from 'react-router-dom';
-import Loadable from 'react-loadable';
+import { RouteComponentProps } from 'react-router-dom';
 
 /* Redux */
 import { connect, MapStateToProps, MapDispatchToProps } from 'react-redux';
@@ -17,13 +16,10 @@ import { logoutUser } from './store/account/account.requests';
 import { getUsersMatches } from './store/match/match.requests';
 
 /* Types */
-import { APIError } from 'api/types';
-import { User } from 'types/user';
 import { Notifications } from 'types/notification';
 
 /* Components */
 import MainWrapper from './components/MainWrapper';
-import { EnvironmentPlugin } from 'webpack';
 
 type CombinedProps = StoreProps & DispatchProps & RouteComponentProps;
 
@@ -83,7 +79,6 @@ class App extends React.Component<CombinedProps, ComponentState> {
     };
 };
 
-//props from redux
 interface StoreProps {
     isAuthenticated: boolean;
     accountLoading: boolean;
@@ -101,7 +96,7 @@ const mapStateToProps: MapStateToProps<StoreProps, {}, ApplicationState> = state
     username: state.account.user?.username || '',
     netcode: state.account.user?.netcode || '',
     avatar: state.account.user?.avatar || '',
-    notifications: state.notifications.notifications, //TODO: move?
+    notifications: state.notifications.notifications, 
     /*API Errors */
     //accountError: state.account.error
 });
@@ -116,7 +111,7 @@ interface DispatchProps {
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, {}> = (dispatch: ThunkDispatch<ApplicationState, undefined, Action<any>>) => {
     return {
         checkAuthenticationDispatch: () => dispatch(checkAuthentication()),
-        logoutDispatch: () => dispatch(logoutUser({})), //TODO: fix no params
+        logoutDispatch: () => dispatch(logoutUser({})),
         connectSocketDispatch: (host) => dispatch(connectSocket(host)),
         getUsersMatchesDispatch: () => dispatch(getUsersMatches())
     };

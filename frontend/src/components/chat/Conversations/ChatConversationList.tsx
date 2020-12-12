@@ -5,7 +5,6 @@ import { Match } from 'types/match';
 import List from '@material-ui/core/List';
 
 import ChatConversationItem from './ChatConversationItem';
-import { Typography } from '@material-ui/core';
 
 interface Props {
     userId: string;

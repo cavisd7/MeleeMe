@@ -15,7 +15,6 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const injectEnvironment = require('./env');
 
 const appDir = fs.realpathSync(process.cwd());
-const publicPath = '/';
 const publicUrl = '';
 const tsconfigPath = path.resolve(appDir, 'tsconfig.json');
 
@@ -31,8 +30,6 @@ module.exports = {
         historyApiFallback:{
             index: '/'
         },
-        //host: '0.0.0.0',
-        //port: 3000,
     },
     output: {
         pathinfo: true,
@@ -115,11 +112,6 @@ module.exports = {
         new WatchMissingNodeModulesPlugin(path.resolve(appDir, 'node_modules')),
         new ForkTsCheckerWebpackPlugin({
             async: true,
-            //memoryLimit: 4096,
-            //watch: srcDir,
-            //tsconfig: tsconfigPath,
-            //tslint: paths.appTsLint
-            //eslint: true
         }),
     ],
     optimization: {

@@ -41,13 +41,12 @@ const AccountOverview: React.FC<CombinedProps> = props => {
             history.push('/');
         })
         .catch(err => { 
-            console.log('error', err)
             setDeleteFailed(true)
         });
-    }
+    };
 
     return (
-        <Grid container /*spacing={2}*/>
+        <Grid container>
             <Grid item xs={12} style={{marginBottom: '1rem'}}>
                 <AccountInfoSection 
                     accountError={accountError}

@@ -22,7 +22,6 @@ import Hidden from '@material-ui/core/Hidden';
 import SplashScreen from '../SplashScreen';
 import ChatConversationsSideMenu from './Conversations/ChatConversationSideMenu';
 
-//TODO: type?
 const ChatSelectedConversation = Loadable({
     loader: () => import('./Messages/ChatSelectedConversation'),
     loading: () => SplashScreen
@@ -47,16 +46,7 @@ class Chat extends React.Component<CombinedProps, State> {
         loading: this.props.matchLoading
     };
 
-    componentDidUpdate(prevProps, prevState) {
-        console.log('[index] componentDidUpdate',this.state, this.props)
-    }
-
-    componentDidMount () {
-        console.log('[index] componentDidMount', this.state, this.props)
-    }
-
     shouldComponentUpdate (nextProps: CombinedProps, nextState: State) {
-        console.log('[index] shouldComponentUpdate', nextState, nextProps);
         return nextState.currentMatchId !== this.state.currentMatchId 
             || nextProps.matchLoading !== this.props.matchLoading 
             || nextProps.chatLoading !== this.props.chatLoading 

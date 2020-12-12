@@ -1,6 +1,6 @@
 import React from "react";
 import Loadable from 'react-loadable';
-import { Switch, Route, Link, RouteComponentProps } from 'react-router-dom';
+import { Switch, Route, RouteComponentProps } from 'react-router-dom';
 
 import { connect, MapStateToProps, MapDispatchToProps } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -8,9 +8,6 @@ import { Action } from 'redux';
 import { ApplicationState } from '../../store/index';
 
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import Typography from '@material-ui/core/Typography';
 
 import Navigation from '../Navigation';
 import SplashScreen from '../SplashScreen';

@@ -16,7 +16,6 @@ const config = {
     baseURL: `${API_ROOT}`,
     headers: {
         'Content-Type': 'application/json',
-        //authorization: token
     },
     withCredentials: true
 };
@@ -79,14 +78,5 @@ const mapErrors = <T extends string>(validationError: ValidationError): APIError
 
     return validationErrors;
 };
-
-/*const validateTransport = <T extends object>(data: T, schema: ObjectSchema<T>) => {
-    try {
-        schema.validateSync(data, { abortEarly: false });
-        return;
-    } catch (e) {
-        return mapErrors(e);
-    };
-};*/
 
 export { apiv1, generateRequest, mapErrors };

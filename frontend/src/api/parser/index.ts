@@ -1,10 +1,6 @@
 import { Request, generateRequest, v1Request } from '../index';
 
-import { SLPMatchData } from 'src/store/parser/types';
-
-interface SlpRequestParams {
-    data: FormData
-}
+import { SlpMatchData } from 'src/store/parser/types';
 
 const slpMatchUploadRequest = (data: File[]) => {
     const formData = new FormData();
@@ -12,12 +8,11 @@ const slpMatchUploadRequest = (data: File[]) => {
         formData.append(`slp_replay${i}`, data[i], data[i].name);
     });
 
-    return generateRequest<SLPMatchData[]>(
+    return generateRequest<SlpMatchData[]>(
         Request
             .setData(formData)
             .setUrl('/parser/parse')
             .setMethod('post')
-            //.setOnUploadProgress()
     ).then(res => res.data);
 };
 

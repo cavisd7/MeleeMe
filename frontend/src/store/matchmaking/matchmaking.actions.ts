@@ -1,6 +1,5 @@
 import { actionCreatorFactory } from 'typescript-fsa';
 
-import { SocketAction } from '../types';
 import { 
     MatchRequest, 
     MatchFilter, 

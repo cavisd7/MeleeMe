@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Theme, makeStyles, Typography, InputBase, IconButton } from '@material-ui/core';
+import { Theme, makeStyles, InputBase, IconButton } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper'
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -10,7 +10,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: '2px 4px',
         display: 'flex',
         alignItems: 'center',
-        //width: 400,
         height: '30px',
         boxShadow: 'none',
         border: '1px solid #e6dfdf'
@@ -21,7 +20,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingTop: '5px'
     },
     iconButton: {
-        //padding: 10,
         height: '30px',
         width: '30px',
     }

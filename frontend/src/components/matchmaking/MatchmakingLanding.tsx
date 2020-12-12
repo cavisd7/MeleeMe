@@ -2,8 +2,6 @@ import React from 'react';
 
 import { MatchFilter, MatchRequest, NegotiateMatchRequest, MatchNegotiationPart } from 'types/match';
 
-import Grid from '@material-ui/core/Grid';
-
 import MatchSearch from './SearchMatchRequests/MatchSearch';
 import MatchRequestList from './MatchRequests/MatchRequestList';
 import { RouteComponentProps } from 'react-router-dom';
@@ -43,8 +41,6 @@ const MatchmakingLanding: React.FC<CombinedProps> = (props) => {
         );
 
         negotiateMatch(matchNegotiation);
-
-        //history.push(`/messages/${matchNegotiationPart.matchId}`);
     };
 
     return (

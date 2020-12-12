@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginBottom: '2rem', 
         borderBottom: '1px solid rgb(231, 235, 243)', 
         paddingBottom: '1.0rem'
-        //padding: theme.spacing(3, 0)
     }
 }));
 

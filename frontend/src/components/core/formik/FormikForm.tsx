@@ -17,8 +17,6 @@ const FormikForm: React.FC<CombinedProps> = props => {
     return (
         <Formik 
             validateOnChange
-            //enableReinitialize
-            //className={className}
             validationSchema={props.schema}
             initialValues={props.initialValues}
             onSubmit={(values, { resetForm }) => props.handleSubmit(values, resetForm)}

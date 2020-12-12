@@ -1,9 +1,6 @@
 import { Request, generateRequest } from '../index';
 import { 
     updateAccountSchema, 
-    registerAccountSchema, 
-    loginAccountSchema, 
-    deleteAccountSchema 
 } from './schemas';
 import { User, Token } from 'types/user';
 import { 
@@ -11,7 +8,6 @@ import {
     DeleteAccountParams,
     RegistrationInput, 
     UserAuthentication, 
-    UserPayload,
     UpdatePasswordParams 
 } from './types';
 
@@ -44,7 +40,6 @@ const loginUserRequest = (data: UserAuthentication) => {
         const { user, token } = res.data;
 
         const decoded: Token = jwt_decode(token);
-        console.log('decoded', decoded)
 
         return { user, token: decoded };
     })

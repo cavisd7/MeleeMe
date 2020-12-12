@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteComponentProps, Link } from 'react-router-dom';
 
-import { APIError, APIErrorResponse } from 'api/types';
+import { APIErrorResponse } from 'api/types';
 import { UserAuthentication } from 'api/account/types';
 import { loginAccountSchema } from 'api/account/schemas';
 

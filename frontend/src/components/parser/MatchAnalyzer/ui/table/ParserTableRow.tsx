@@ -40,10 +40,6 @@ const ParserTableRow: React.FC<Props> = props => {
 
     const classes = useStyles();
 
-    /*React.useEffect(() => {
-        console.log()
-    }, [])*/
-
     return (
         <React.Fragment>
             <CustomTableRow

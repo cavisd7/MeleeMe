@@ -15,17 +15,9 @@ interface Props {
 const MatchSearch: React.FC<Props> = (props) => {
     const { searchMatchRequests, filter } = props;
 
-    //const [state, setState] = React.useState<MatchFilter>(filter);
-
     const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        //setState({ ...state, [e.target.name]: e.target.value });
         searchMatchRequests({ ...filter, [e.target.name]: e.target.value });
     };
-
-    React.useEffect(() => {
-        //setState(filter);
-        console.log('filter', filter)
-    }, [filter])
 
     return (
         <Grid className='space-bottom' container spacing={4} justify='center' direction='row' alignItems='center'>

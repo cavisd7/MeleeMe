@@ -10,35 +10,26 @@ import {
     Toolbar, 
     Typography,
     Avatar, 
-    Badge,
     Hidden,
     IconButton,
-    Drawer, ListItemText,
-    ListItem,
-    List
 } from '@material-ui/core'
 
 import MenuIcon from '@material-ui/icons/Menu';
 import EmailIcon from '@material-ui/icons/Email';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import DropDownMenu from 'core/DropDownMenu';
 import { MenuItem } from './core/CustomMenuItem';
 import CustomMenuList from './core/CustomMenuList';
-import NotificationsList from './NotificationsList';
-import notifications from 'src/store/notifications/notifications.reducer';
 import { Notifications } from 'types/notification';
 
-//TODO: cleanup styles
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         backgroundColor: '#f27e73',
         boxShadow: 'none',
         zIndex: 2301
-        //borderBottom: '3px solid #ee5849'
     },
     toolbar: {
         display: 'flex',
@@ -107,7 +98,6 @@ const Navbar: React.FC<Props> = (props) => {
         netcode,
         avatar,
         isAuthenticated,
-        notifications,
         logout,
         toggleDrawer 
     } = props;
@@ -130,26 +120,14 @@ const Navbar: React.FC<Props> = (props) => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const menuAnchor = React.useRef(null);
     
-    const [isNotificationsOpen, setIsNotificationsOpen] = React.useState(false);
-    const notificationsAnchor = React.useRef(null);
-    
     const handleToggleMenu = () => {
         setIsMenuOpen((prevOpen) => !prevOpen)
-    };
-    
-    const handleToggleNotifications = () => {
-        setIsNotificationsOpen((prevState) => !prevState)
     };
     
     const toLogin = () => {
         history.push('/auth/login');
     };
 
-    /*const handleLogout = (_: React.MouseEvent<HTMLElement>) => {
-        logout();
-    };*/
-
-    //TODO: handle onClicks
     const createMenuItems = () => {
         const allMenuItems: _MenuItem[] = [
             {
@@ -184,7 +162,6 @@ const Navbar: React.FC<Props> = (props) => {
             },
         ]
 
-        //TODO: filter out condition prop on objects?
         return allMenuItems.filter(menuItem => menuItem.condition === true);
     };
 
@@ -238,7 +215,6 @@ const Navbar: React.FC<Props> = (props) => {
                                     disableFocusRipple
                                     disableTouchRipple
                                     onClick={toggleDrawer}
-                                    //className={classes.navIconHide}
                                 >
                                     <MenuIcon />
                                 </IconButton>
@@ -254,30 +230,6 @@ const Navbar: React.FC<Props> = (props) => {
                             {
                                 isAuthenticated ? (
                                     <React.Fragment>
-                                        {/*<Grid item>
-                                            <Button
-                                                disableTouchRipple
-                                                style={{minWidth: 0, color: 'rgba(255, 255, 255, 0.7)'}}
-                                                ref={notificationsAnchor}
-                                                onClick={handleToggleNotifications}
-                                            >
-                                                <Badge badgeContent={Object.keys(notifications).length} color='secondary'>
-                                                    <NotificationsNoneIcon /> 
-                                                </Badge>
-                                            </Button>
-                                            <DropDownMenu
-                                                anchor={notificationsAnchor}
-                                                isOpen={isNotificationsOpen}
-                                                setIsOpen={setIsNotificationsOpen}
-                                            >
-
-                                                <NotificationsList 
-                                                    history={history}
-                                                    isMenuOpen={isNotificationsOpen} 
-                                                    notifications={notifications}
-                                                />
-                                            </DropDownMenu>
-                                        </Grid>*/}
                                         <Grid item>
                                             <Button
                                                 style={{color: 'rgba(255, 255, 255, 0.7)'}}

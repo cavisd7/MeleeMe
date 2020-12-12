@@ -13,14 +13,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: '60px',
         backgroundColor: '#faf9f9',
         padding: '0.5rem 1.5rem',
-        //boxShadow: 'inset 0 -1px 0 #c5c6c8',
     },
     name: {
         borderRight: '1px solid #e6dfdf', 
         paddingRight: '1rem',
         [theme.breakpoints.down('sm')]: {
             //borderRight: 'none',
-
         }
     }
 }));
